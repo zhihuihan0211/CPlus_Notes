@@ -71,6 +71,32 @@
 
 
 # 初始化
+
+## 结构化绑定
+
+结构化绑定允许多个变量，这些变量使用数组、结构体、pair或元组中的元素以初始化(c+17/20)
+
+``` c++
+例如:
+    array values{11, 22, 33};
+
+    //结构化绑定 
+    auto [x, y, z] { values };
+
+    //注意结构化绑定必须使用auto关键字
+
+
+    std::pair m_Pair{"Hello ", 5};
+    auto [name, num] { m_Pair };
+
+    std::cout << "name: " << name << std::endl;
+    std::cout << "Num: " << num << std::endl;
+    
+    //还可以结合引用使用
+    //......
+
+```
+
 ## 构造函数
 
 ## c++ 11 之后的统一初始化

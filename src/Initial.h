@@ -1,4 +1,4 @@
-#pragma once 
+#pragma once
 
 struct Employee
 {
@@ -6,5 +6,4 @@ struct Employee
     char name;
     int Num;
     float Length;
-    
 };
