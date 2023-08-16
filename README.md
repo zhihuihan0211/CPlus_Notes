@@ -122,4 +122,14 @@ Employee emp{.name='C', .Num=10, .Length = 150}; // 指派初始化
 ```
 
 
+## 类型推断
+### auto
+
+### decltype
+**decltype 未去除引用和const 限定符**
+
+
+
+
+
 

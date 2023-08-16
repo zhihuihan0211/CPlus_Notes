@@ -11,9 +11,12 @@
 int main(int argc, char *argv[])
 {
 
+    // g++ .\main.cpp -omain -std=c++2a
     Employee emp{.name = 'C', .Num = 10, .Length = 150}; // 指派初始化
 
     PrintLogMessage("********************************************");
+
+    std::basic_string<char> Hel = "Hello!";//String 的真正类，string只是类型定义
 
     std::cout << "emo: name : " << emp.name << ": Num  " << emp.Num << std::endl;
     std::cout << "Hello world!" << std::endl;
