@@ -69,6 +69,10 @@
     # 或者
     gcc main.o hello.o ../lib/libfun1.dll ../lib/libfun2.dll ../lib/libfun3.dll
 
+# MakeFile
+
+
+
 
 # 初始化
 
