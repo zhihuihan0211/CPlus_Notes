@@ -1,14 +1,13 @@
 CC=g++
-# 手动指定 默认最终目标
-# .DEFAULT_GOAL = hello.o
 
-# makefile 的第一个目标会被默认设置为最终目标而进行执行
-
-hello: hello.o
-	g++ hello.o -o hello
+# .DEFAULT_GOAL = main
 
 
-hello.o: hello.cpp ; g++ -c hello.cpp
+
+main: main.o
+	g++ main.o -o main
+
+main.o: main.cpp ; g++ -c main.cpp
 
 
 
@@ -38,5 +37,5 @@ endif
 
 # 伪目标
 clean:
-	-$(RM) hello.o
-	-$(RM) hello.exe
+	-$(RM) main.o
+	-$(RM) main.exe
