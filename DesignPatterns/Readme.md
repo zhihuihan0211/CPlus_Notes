@@ -389,9 +389,446 @@ int main() {
 
     观察者模式有助于实现松耦合的设计，其中主题和观察者相互独立，可以轻松添加或删除观察者而不影响主题或其他观察者。这使得它非常适用于需要在对象之间建立动态依赖关系的场景，例如事件处理系统或图形用户界面框架。
 
+### 4、装饰模式（Decorator Pattern）
+装饰模式（Decorator Pattern）是一种结构型设计模式，它允许你在不改变对象接口的情况下，动态地将新行为附加到对象上。这个模式以一种透明的方式来扩展对象的功能，同时保持对象的接口不变。
+
+装饰模式通过将装饰器类包装在具体组件类周围，以添加新功能，实现了 ***开放-封闭原则*** ，允许你在不修改现有代码的情况下添加新的功能。
+
+**动机**        
+在某些情况下我们可能会“过度地使用继承来扩展对象的功能”，由于继承为类型引入的静态特质，使得这种扩展方式缺乏灵活性；并且随着子类的增多（扩展功能的增多），各种子类的组合（扩展功能的组合）会导致更多子类的膨胀。
 
 
-### 1、模板方法模式（Template Method Pattern）  
+**以下是装饰模式的关键要点：**      
+
+- 组件接口（Component Interface）：这是抽象组件类或接口，定义了具体组件和装饰器都必须实现的方法。通常包括了一些核心的操作。
+- 具体组件（Concrete Component）：这是实现组件接口的具体类，它是被装饰的对象，可以添加功能的基础。
+- 装饰器（Decorator）：这是实现组件接口并持有一个组件对象的抽象类。装饰器可以添加新的行为或修改组件的行为，但不改变组件的接口。
+- 具体装饰器（Concrete Decorator）：这是具体的装饰器类，扩展了装饰器抽象类并实现了新的功能或修改了组件的行为。
+```c++
+#include <iostream>
+
+// 组件接口
+class Coffee {
+public:
+    virtual void brew() = 0;
+};
+
+// 具体组件
+class SimpleCoffee : public Coffee {
+public:
+    void brew() override {
+        std::cout << "Brewing a simple coffee" << std::endl;
+    }
+};
+
+// 装饰器抽象类
+class CoffeeDecorator : public Coffee {
+protected:
+    Coffee* coffee;
+
+public:
+    CoffeeDecorator(Coffee* c) : coffee(c) {}
+
+    void brew() override {
+        coffee->brew();
+    }
+};
+
+// 具体装饰器1
+class MilkDecorator : public CoffeeDecorator {
+public:
+    MilkDecorator(Coffee* c) : CoffeeDecorator(c) {}
+
+    void brew() override {
+        CoffeeDecorator::brew();
+        addMilk();
+    }
+
+    void addMilk() {
+        std::cout << "Adding milk to the coffee" << std::endl;
+    }
+};
+
+// 具体装饰器2
+class SugarDecorator : public CoffeeDecorator {
+public:
+    SugarDecorator(Coffee* c) : CoffeeDecorator(c) {}
+
+    void brew() override {
+        CoffeeDecorator::brew();
+        addSugar();
+    }
+
+    void addSugar() {
+        std::cout << "Adding sugar to the coffee" << std::endl;
+    }
+};
+
+int main() {
+    Coffee* coffee = new SimpleCoffee();
+    coffee->brew();
+
+    Coffee* milkCoffee = new MilkDecorator(new SimpleCoffee());
+    milkCoffee->brew();
+
+    Coffee* sugarMilkCoffee = new SugarDecorator(new MilkDecorator(new SimpleCoffee()));
+    sugarMilkCoffee->brew();
+
+    delete coffee;
+    delete milkCoffee;
+    delete sugarMilkCoffee;
+
+    return 0;
+}
+```
+
+    在这个示例中，我们有一个 Coffee 接口，以及一个具体组件 SimpleCoffee，它实现了 brew() 方法，用于简单的咖啡冲泡。 
+
+    然后，我们定义了装饰器抽象类 CoffeeDecorator，它也实现了 brew() 方法，但它持有一个 Coffee 对象，以便在调用 brew() 时能够委托给具体组件。
+
+    接着，我们创建了两个具体装饰器类 MilkDecorator 和 SugarDecorator，它们分别添加牛奶和糖到咖啡中，并在 brew() 方法中调用相应的方法。
+
+    在 main 函数中，我们演示了如何使用装饰器来动态扩展咖啡的功能。你可以看到，通过将装饰器堆叠在一起，我们可以根据需要组合不同的功能，而不改变组件的接口。这是装饰模式的核心思想。
+
+- **要点总结**  
+    通过采用组合而非继承的手法， Decorator模式实现了在运行时 动态扩展对象功能的能力，而且可以根据需要扩展多个功能。避免 了使用继承带来的“灵活性差”和“多子类衍生问题”。
+    
+    Decorator类在接口上表现为is-a Component的继承关系，即 Decorator类继承了Component类所具有的接口。但在实现上又 表现为has-a Component的组合关系，即Decorator类又使用了 另外一个Component类。
+    
+    Decorator模式的目的并非解决“多子类衍生的多继承”问题， Decorator模式应用的要点在于解决“主体类在多个方向上的扩展 功能”——是为“装饰”的含义。
+
+
+
+### 5、桥模式（Bridge Pattern）
+桥模式（Bridge Pattern）是一种结构型设计模式，它将一个对象的抽象部分与其实现部分分离，使它们可以独立地变化。这种模式通过将对象的功能和实现分开，以实现松耦合，从而提高系统的可维护性和扩展性。
+
+桥模式的核心思想是使用组合而不是继承来分离抽象和实现。它在设计中使用两个层次结构，一个抽象层次结构和一个实现层次结构。抽象层次结构包括一个抽象类，它定义了抽象部分的接口，而实现层次结构包括一个或多个实现类，它们提供了接口的具体实现。
+
+**以下是桥模式的关键要点：**    
+
+- 抽象类或接口（Abstraction）：这是抽象部分的定义，它包含一个对实现对象的引用，并定义了一组抽象方法，这些方法委托给实现对象。抽象类可以包含一些特定于抽象部分的方法。
+
+- 具体类（Concrete Abstraction）：这是抽象类的具体实现，它继承自抽象类并实现了抽象方法，以便委托给实现对象。
+
+- 实现接口（Implementor）：这是实现部分的接口，它定义了实现对象的方法。
+
+- 具体实现类（Concrete Implementor）：这是实现接口的具体实现，它提供了实现对象的具体功能。
+
+```C++
+#include <iostream>
+
+// 实现接口
+class Implementor {
+public:
+    virtual void operationImpl() = 0;
+};
+
+// 具体实现类 A
+class ConcreteImplementorA : public Implementor {
+public:
+    void operationImpl() override {
+        std::cout << "Concrete Implementor A" << std::endl;
+    }
+};
+
+// 具体实现类 B
+class ConcreteImplementorB : public Implementor {
+public:
+    void operationImpl() override {
+        std::cout << "Concrete Implementor B" << std::endl;
+    }
+};
+
+// 抽象类
+class Abstraction {
+protected:
+    Implementor* implementor;
+
+public:
+    Abstraction(Implementor* impl) : implementor(impl) {}
+
+    virtual void operation() = 0;
+};
+
+// 具体抽象类 1
+class ConcreteAbstraction1 : public Abstraction {
+public:
+    ConcreteAbstraction1(Implementor* impl) : Abstraction(impl) {}
+
+    void operation() override {
+        std::cout << "Concrete Abstraction 1 - ";
+        implementor->operationImpl();
+    }
+};
+
+// 具体抽象类 2
+class ConcreteAbstraction2 : public Abstraction {
+public:
+    ConcreteAbstraction2(Implementor* impl) : Abstraction(impl) {}
+
+    void operation() override {
+        std::cout << "Concrete Abstraction 2 - ";
+        implementor->operationImpl();
+    }
+};
+
+int main() {
+    Implementor* implA = new ConcreteImplementorA();
+    Implementor* implB = new ConcreteImplementorB();
+
+    Abstraction* abs1 = new ConcreteAbstraction1(implA);
+    Abstraction* abs2 = new ConcreteAbstraction2(implB);
+
+    abs1->operation();
+    abs2->operation();
+
+    delete implA;
+    delete implB;
+    delete abs1;
+    delete abs2;
+
+    return 0;
+}
+// 在这个示例中，我们有一个实现接口 Implementor，其中包含了 operationImpl() 方法。然后，我们创建了两个具体的实现类 ConcreteImplementorA 和 ConcreteImplementorB，它们分别提供了实现的不同功能。
+
+// 接着，我们定义了抽象类 Abstraction，它包含一个对实现对象的引用，并定义了一个抽象方法 operation()，该方法委托给实现对象的 operationImpl() 方法。我们创建了两个具体的抽象类 ConcreteAbstraction1 和 ConcreteAbstraction2，它们分别与不同的实现对象关联。
+
+// 在 main 函数中，我们创建了实现对象和抽象对象，并演示了如何使用桥模式来分离抽象和实现，从而能够动态地选择不同的实现。这种分离允许我们扩展系统的功能，同时保持高度的灵活性。
+```
+
+
+### 6、工厂方法模式（Factory Method Pattern）
+工厂方法模式（Factory Method Pattern）是一种创建型设计模式，它提供了一种创建对象的接口，但将对象的实际创建过程委托给子类。这样可以使一个类的实例化延迟到其子类，从而允许子类决定创建的对象类型。
+
+工厂方法模式通常涉及两个层次结构：一个是抽象产品（Abstract Product）层，其中定义了产品的接口；另一个是具体产品（Concrete Product）层，其中实现了具体的产品。
+
+    定义一个用于创建对象的接口，让子类决定实例化哪一个类。Factory Method使得一个类的实例化延迟（目的：解耦，手段：虚函数）到子类.
+
+
+**以下是工厂方法模式的关键要点：**  
+
+- 抽象产品（Abstract Product）：这是产品的抽象接口，定义了产品的通用方法。
+
+- 具体产品（Concrete Product）：这是实现抽象产品接口的具体类，它表示真正的产品。
+
+- 抽象工厂（Abstract Factory）：这是创建产品的抽象接口，通常包括一个创建产品的方法（工厂方法）。
+
+- 具体工厂（Concrete Factory）：这是实现抽象工厂接口的具体类，它负责创建具体产品的实例。
+
+```C++
+#include <iostream>
+
+// 抽象产品
+class Product {
+public:
+    virtual void use() = 0;
+};
+
+// 具体产品 A
+class ConcreteProductA : public Product {
+public:
+    void use() override {
+        std::cout << "Using Concrete Product A" << std::endl;
+    }
+};
+
+// 具体产品 B
+class ConcreteProductB : public Product {
+public:
+    void use() override {
+        std::cout << "Using Concrete Product B" << std::endl;
+    }
+};
+
+// 抽象工厂
+class Factory {
+public:
+    virtual Product* createProduct() = 0;
+};
+
+// 具体工厂 A
+class ConcreteFactoryA : public Factory {
+public:
+    Product* createProduct() override {
+        return new ConcreteProductA();
+    }
+};
+
+// 具体工厂 B
+class ConcreteFactoryB : public Factory {
+public:
+    Product* createProduct() override {
+        return new ConcreteProductB();
+    }
+};
+
+int main() {
+    Factory* factoryA = new ConcreteFactoryA();
+    Product* productA = factoryA->createProduct();
+    productA->use();
+
+    Factory* factoryB = new ConcreteFactoryB();
+    Product* productB = factoryB->createProduct();
+    productB->use();
+
+    delete factoryA;
+    delete productA;
+    delete factoryB;
+    delete productB;
+
+    return 0;
+}
+// 在这个示例中，我们有抽象产品 Product，其中定义了一个 use() 方法。然后，我们创建了两个具体产品 ConcreteProductA 和 ConcreteProductB，它们分别实现了 Product 接口。
+
+// 接着，我们定义了抽象工厂 Factory，其中包括一个纯虚的 createProduct() 方法，该方法由具体工厂实现以创建具体产品的实例。
+
+// 我们创建了两个具体工厂 ConcreteFactoryA 和 ConcreteFactoryB，它们分别实现了 createProduct() 方法来创建不同的产品。
+
+// 在 main 函数中，我们演示了如何使用工厂方法模式来创建产品。根据所选的工厂，我们可以动态地创建不同类型的产品，而无需直接实例化具体产品类。这种模式有助于实现对象的创建与使用的解耦。
+```
+  
+
+
+
+### 7、抽象工厂模式（Abstract Factory Pattern）
+
+抽象工厂模式（Abstract Factory Pattern）是一种创建型设计模式，它提供了一个接口，用于创建相关或依赖对象的家族，而无需指定它们的具体类。抽象工厂允许你创建一组对象，这些对象之间具有相互关联的特性，并且与具体实现无关。
+
+抽象工厂模式通常包括两个层次结构：一个是抽象产品（Abstract Product）层，定义了产品的接口；另一个是抽象工厂（Abstract Factory）层，定义了用于创建产品家族的接口。
+
+
+**以下是抽象工厂模式的关键要点：**
+
+- 抽象产品（Abstract Product）：这是产品的抽象接口，定义了产品家族的通用方法。
+
+- 具体产品（Concrete Product）：这是实现抽象产品接口的具体类，它表示真正的产品。
+
+- 抽象工厂（Abstract Factory）：这是创建产品家族的抽象接口，通常包括一组创建产品的方法。
+
+- 具体工厂（Concrete Factory）：这是实现抽象工厂接口的具体类，它负责创建产品家族的具体实例。
+
+```c++
+#include <iostream>
+
+// 抽象产品 A
+class AbstractProductA {
+public:
+    virtual void useA() = 0;
+};
+
+// 具体产品 A1
+class ConcreteProductA1 : public AbstractProductA {
+public:
+    void useA() override {
+        std::cout << "Using Concrete Product A1" << std::endl;
+    }
+};
+
+// 具体产品 A2
+class ConcreteProductA2 : public AbstractProductA {
+public:
+    void useA() override {
+        std::cout << "Using Concrete Product A2" << std::endl;
+    }
+};
+
+// 抽象产品 B
+class AbstractProductB {
+public:
+    virtual void useB() = 0;
+};
+
+// 具体产品 B1
+class ConcreteProductB1 : public AbstractProductB {
+public:
+    void useB() override {
+        std::cout << "Using Concrete Product B1" << std::endl;
+    }
+};
+
+// 具体产品 B2
+class ConcreteProductB2 : public AbstractProductB {
+public:
+    void useB() override {
+        std::cout << "Using Concrete Product B2" << std::endl;
+    }
+};
+
+// 抽象工厂
+class AbstractFactory {
+public:
+    virtual AbstractProductA* createProductA() = 0;
+    virtual AbstractProductB* createProductB() = 0;
+};
+
+// 具体工厂 1
+class ConcreteFactory1 : public AbstractFactory {
+public:
+    AbstractProductA* createProductA() override {
+        return new ConcreteProductA1();
+    }
+
+    AbstractProductB* createProductB() override {
+        return new ConcreteProductB1();
+    }
+};
+
+// 具体工厂 2
+class ConcreteFactory2 : public AbstractFactory {
+public:
+    AbstractProductA* createProductA() override {
+        return new ConcreteProductA2();
+    }
+
+    AbstractProductB* createProductB() override {
+        return new ConcreteProductB2();
+    }
+};
+
+int main() {
+    AbstractFactory* factory1 = new ConcreteFactory1();
+    AbstractProductA* productA1 = factory1->createProductA();
+    AbstractProductB* productB1 = factory1->createProductB();
+
+    productA1->useA();
+    productB1->useB();
+
+    AbstractFactory* factory2 = new ConcreteFactory2();
+    AbstractProductA* productA2 = factory2->createProductA();
+    AbstractProductB* productB2 = factory2->createProductB();
+
+    productA2->useA();
+    productB2->useB();
+
+    delete factory1;
+    delete productA1;
+    delete productB1;
+
+    delete factory2;
+    delete productA2;
+    delete productB2;
+
+    return 0;
+}
+// 在这个示例中，我们有两个抽象产品 AbstractProductA 和 AbstractProductB，它们定义了产品家族的接口。然后，我们创建了四个具体产品类，分别是 ConcreteProductA1、ConcreteProductA2、ConcreteProductB1 和 ConcreteProductB2，它们实现了抽象产品的接口。
+
+// 接着，我们定义了抽象工厂 AbstractFactory，其中包括一组创建产品的方法。我们创建了两个具体工厂类 ConcreteFactory1 和 ConcreteFactory2，它们分别实现了抽象工厂接口的方法以创建不同类型的产品。
+
+// 在 main 函数中，我们演示了如何使用抽象工厂模式来创建产品家族。根据所选的工厂，我们可以动态地创建不同类型的产品，而无需直接实例化具体产品类。这种模式有助于实现对象的创建与使用的解耦，并且支持创建一组相关的对象。
+```
+
+
+
+
+
+
+
+
+
+
+
+
+### 7、抽象工厂模式（Abstract Factory Pattern）
 
 
 - [1] [李建忠 c++ 设计模式课程] ()
