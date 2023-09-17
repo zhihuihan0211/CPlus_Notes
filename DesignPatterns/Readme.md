@@ -818,17 +818,245 @@ int main() {
 ```
 
 
+### 8、单例模式（Singleton Pattern）
+
+单例模式（Singleton Pattern）是一种创建型设计模式，用于确保一个类只有一个实例，并提供一种全局访问点来访问该实例。这对于需要在整个应用程序中共享某个资源的情况非常有用，例如配置信息、日志记录器、数据库连接等。
+
+单例模式的关键思想是通过私有化构造函数，禁止外部直接创建对象实例，然后提供一个静态方法或者静态成员变量，用于获取或创建唯一的实例。
+```C++
+#include <iostream>
+
+class Singleton {
+public:
+    // 获取单例实例的静态方法
+    static Singleton& getInstance() {
+        static Singleton instance; // 使用局部静态变量确保仅在首次调用时创建实例
+        return instance;
+    }
+
+    // 示例方法
+    void showMessage() {
+        std::cout << "Hello from Singleton!" << std::endl;
+    }
+
+    // 防止拷贝构造和赋值操作
+    Singleton(const Singleton&) = delete;
+    Singleton& operator=(const Singleton&) = delete;
+
+private:
+    // 私有构造函数，禁止外部创建实例
+    Singleton() {}
+
+    // 私有析构函数，禁止外部销毁实例
+    ~Singleton() {}
+};
+
+int main() {
+    Singleton& instance1 = Singleton::getInstance();
+    instance1.showMessage();
+
+    Singleton& instance2 = Singleton::getInstance();
+    instance2.showMessage();
+
+    // 两个实例应该是同一个对象，因此它们的地址相同
+    if (&instance1 == &instance2) {
+        std::cout << "Both instances are the same." << std::endl;
+    } else {
+        std::cout << "Instances are different." << std::endl;
+    }
+
+    return 0;
+}
+// 在这个示例中，我们定义了一个 Singleton 类，其中包括以下关键要点：
+
+// 私有的构造函数和析构函数，以防止外部创建和销毁实例。
+// 静态方法 getInstance()，用于获取单例实例。在这个方法中，我们使用了局部静态变量来确保只有在首次调用时创建实例，以避免多线程问题。
+// 示例方法 showMessage()，用于演示单例的功能。
+// 删除拷贝构造函数和赋值操作符，以防止通过拷贝方式创建多个实例。
+// 在 main 函数中，我们通过 Singleton::getInstance() 获取单例实例，并演示了两个实例是否相同的比较。根据单例模式的定义，两个实例应该是相同的，因此它们的地址相同。
+
+// 单例模式适用于需要确保全局唯一性的情况，但请注意，过度使用单例模式可能会导致全局状态的问题，因此应该谨慎使用。
+```
+#### 单例模式存在的一些问题
+例如以下代码：
+```C++
+#include <iostream>
+using namespace std;
+
+class Singleton {
+// 构造函数声明私有，否则外部也可以构建
+private:
+    Singleton();
+    Singleton(const Singleton &other);
+public:
+    static Singleton *getInstance();
+    static Singleton *m_instance;
+};
+
+// 线程非安全版本
+Singleton *Singleton::getInstance() {
+    if (m_instance == nullptr) {
+        m_instance = new Singleton();
+    }
+    return m_instance;
+}
+```
+在多线程中：线程A和线程B先后执行if (m_instance == nullptr)，但是此时线程A未创建完毕，线程B判空，线程B依然执行创建工作。结果为创建了2个实例，线程不安全。
+- 版本2：
+```C++ 
+// 线程安全版本，但是锁的代价较高
+Singleton *Singleton::getInstance() {
+    Lock lock;
+    if (m_instance == nullptr) {
+        m_instance = new Singleton();
+    }
+    return m_instance;
+}
+```
+存在的问题是：线程A创建时，直接加锁，线程B无法访问，直到线程A创建完毕，成功创建实例，线程B访问时，指针不为空，确保只有一个实例。问题是，对m_instance的操作是读操作，而非写操作，于是加锁导致了大量的性能下降，在高并发（例如web服务器）的情况下，会导致时间开销过大。       
+- 版本3：
+```C++
+// 双检查锁，但是内存读取reorder不安全
+Singleton *Singleton::getInstance() {
+    if (m_instance == nullptr) {
+        Lock lock;
+        if (m_instance == nullptr) {
+            m_instance = new Singleton();
+        }
+    }
+    return m_instance;
+}
+```
+分析：双检查锁，在读取m_instance时不加锁，保证线程A和线程B都可以读取。而假设A读取为空后，便直接加锁，从而进行实例的创建工作。线程B如果在锁前判断非空，则直接返回实例，如果在锁后判断非空，则依旧不重复创建，返回实例，保证了正确性。
+
+为什么锁后还要进行一次检查？保证正确性。如果去掉，则线程A和线程B同时进入条件中，线程A加锁创建完毕，线程B没有发现此时指针不为空，继续创建实例导致重复。
+
+为什么锁前还要进行一次检查？避免都是读操作带来的时间开销，退化为上一个版本。
+
+为什么内存读写reorder不安全？首先引入时间片的概念：同一个CPU永远不可能真正地同时运行多个任务。在只考虑一个CPU的情况下，这些进程“看起来像”同时运行的，实则是轮番穿插地运行。
+
+复习一下创建对象的三步：分配内存、创建对象、返回指针。但是这只是代码层面的步骤，实际上，在编译成为指令之后，编译器有自己的想法（例如编译器优化），而指令就会发生reorder的情况，将创建对象的三步变成为：分配内存、返回指针、创建对象。而返回指针之后，指针不为空，但实际上之后内存没有构造过程；对于线程B而言，得到了不为空的指针，却返回了错误的结果，所以即便是加锁，代码依然有问题风险。
+- 版本4：
+```C++
+// C++11，使用原子操作
+std::atomic<Singleton*> Singleton::m_instance;
+std::mutex Singleton::m_mutex;
+
+Singleton *Singleton::getInstance() {
+    // tmp不会被reorder
+    Singleton *tmp = m_instance.load(std::memory_order_relaxed);
+    std::atomic_thread_fence(std::memory_order_acquire); // 获取内存fence
+
+    if (tmp == nullptr) {
+        std::lock_guard<std::mutex> lock(m_mutex);
+        tmp = m_instance.load(std::memory_order_relaxed);
+        if (tmp == nullptr) {
+            tmp = new Singleton();
+            std::atomic_thread_fence(std::memory_order_release); // 释放内存fence
+            m_instance.store(std::memory_order_relaxed);
+        }
+    }
+    return tmp;
+}
+```
+分析：2005年微软首先给出了volatile关键字，而C++也在C++11引入了解决方案，其他语言也有不同的实现。
+
+绕过new，即绕过常规构造器，而确保一种独特的机制（只创建一个）构造对象
+
+**总结**    
+
+实例构造器可以声明为protected允许子类派生
+
+Singleton一般不支持拷贝构造函数和Clone接口，有可能导致多个对象的实例，与模式初衷相违背
+
+注意双检查锁
+
+### 9、享元模式（Flyweight Pattern )
+享元模式（Flyweight Pattern）是一种结构型设计模式，旨在最小化对象的内存使用或计算成本，同时分享尽可能多的相似对象。它适用于具有大量相似对象的情况，以减少内存占用和提高性能。
+
+享元模式的核心思想是将对象分为两个部分：内部状态（Intrinsic State）和外部状态（Extrinsic State）。
+
+软件系统中采用纯粹的对象方案，大量细粒度的对象会带来很高的运行时代价，内存需求待优化；例如线程池，也是一种共享机制的优化
+
+```c++
+#include <iostream>
+#include <unordered_map>
+
+// 享元接口
+class Flyweight {
+public:
+    virtual void operation(const std::string& extrinsicState) = 0;
+};
+
+// 具体享元
+class ConcreteFlyweight : public Flyweight {
+private:
+    std::string intrinsicState; // 内部状态
+
+public:
+    ConcreteFlyweight(const std::string& intrinsic) : intrinsicState(intrinsic) {}
+
+    void operation(const std::string& extrinsicState) override {
+        std::cout << "Intrinsic State: " << intrinsicState << ", Extrinsic State: " << extrinsicState << std::endl;
+    }
+};
+
+// 享元工厂
+class FlyweightFactory {
+private:
+    std::unordered_map<std::string, Flyweight*> flyweights; // 享元对象池
+
+public:
+    Flyweight* getFlyweight(const std::string& key) {
+        if (flyweights.find(key) == flyweights.end()) {
+            flyweights[key] = new ConcreteFlyweight(key);
+        }
+        return flyweights[key];
+    }
+};
+
+int main() {
+    FlyweightFactory factory;
+    Flyweight* fw1 = factory.getFlyweight("A");
+    Flyweight* fw2 = factory.getFlyweight("B");
+    Flyweight* fw3 = factory.getFlyweight("A"); // 重复使用相同的享元对象
+
+    fw1->operation("X");
+    fw2->operation("Y");
+    fw3->operation("Z");
+
+    delete fw1;
+    delete fw2;
+    delete fw3;
+
+    return 0;
+}
+// 在这个示例中，我们有以下关键要点：
+
+// Flyweight 是享元接口，定义了一个 operation() 方法，该方法接受外部状态作为参数。
+
+// ConcreteFlyweight 是具体享元类，包含内部状态 intrinsicState，并实现了 operation() 方法以打印内部和外部状态。
+
+// FlyweightFactory 是享元工厂，负责管理和提供享元对象。它使用一个哈希表（unordered_map）来存储已创建的享元对象，确保相同的内部状态只有一个对象。
+
+// 在 main 函数中，我们创建了一个享元工厂，并获取了三个享元对象：A、B 和另一个A。尽管有两个外部状态不同的请求使用了相同的享元对象（A），但它们共享相同的内部状态。这可以减少内存占用。
+```
+
+享元模式的关键是在需要共享对象时使用享元工厂，确保尽可能多地共享相似对象，从而降低内存和性能开销。这对于大量相似对象的情况非常有用，如文本编辑器中的字符或游戏中的粒子。
+
+
+### 10、外观模式（Facade Pattern）---(门面模式)
+
+外观模式（Facade Pattern）是一种结构型设计模式，旨在为一个复杂子系统提供一个简化的接口，从而使客户端更容易使用该子系统。外观模式充当了客户端与子系统之间的中介，隐藏了子系统的复杂性，提供了一个高层接口，使客户端更容易调用子系统的功能。
+
+外观模式的关键思想是引入一个外观类（Facade Class），它包含了子系统的一组接口方法，并提供了一个统一的入口点，使客户端可以通过调用外观类的方法来访问子系统的功能，而不需要了解子系统的内部工作。
 
 
 
+### 10、外观模式（Facade Pattern）
 
 
 
-
-
-
-
-### 7、抽象工厂模式（Abstract Factory Pattern）
 
 
 - [1] [李建忠 c++ 设计模式课程] ()
