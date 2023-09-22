@@ -23,7 +23,7 @@
     - [7、抽象工厂模式（Abstract Factory Pattern）](#7抽象工厂模式abstract-factory-pattern)
     - [8、构建器模式（Builder Pattern）](#8构建器模式builder-pattern)
     - [9、单例模式（Singleton Pattern）](#9单例模式singleton-pattern)
-      - [单例模式存在的一些问题](#单例模式存在的一些问题)
+      - [1. 单例模式存在的一些问题](#1-单例模式存在的一些问题)
     - [10、享元模式（Flyweight Pattern )](#10享元模式flyweight-pattern-)
     - [11、外观模式（Facade Pattern）---(门面模式)](#11外观模式facade-pattern---门面模式)
     - [12、代理模式（Proxy Pattern )  ---“接口隔离”模式—————解决耦合度太高的问题](#12代理模式proxy-pattern------接口隔离模式解决耦合度太高的问题)
@@ -1043,7 +1043,8 @@ int main() {
 
 // 单例模式适用于需要确保全局唯一性的情况，但请注意，过度使用单例模式可能会导致全局状态的问题，因此应该谨慎使用。
 ```
-#### 单例模式存在的一些问题
+#### 1. 单例模式存在的一些问题
+
 例如以下代码：
 ```C++
 #include <iostream>
