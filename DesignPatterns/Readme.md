@@ -1,4 +1,36 @@
+
 # c++ 设计模式
+
+- [c++ 设计模式](#c-设计模式)
+  - [设计模式的目标](#设计模式的目标)
+  - [设计模式原则](#设计模式原则)
+    - [1、依赖倒置原则（Dependence Inversion Principle，DIP）](#1依赖倒置原则dependence-inversion-principledip)
+    - [2、开放封闭原则（OCP）](#2开放封闭原则ocp)
+    - [3、单一职责原则（SRP）](#3单一职责原则srp)
+    - [4、Liskov 替换原则（LSP）](#4liskov-替换原则lsp)
+    - [5、接口隔离原则（ISP）](#5接口隔离原则isp)
+    - [6、优先使用对象组合，而不是类继承](#6优先使用对象组合而不是类继承)
+    - [7、封装变化点](#7封装变化点)
+    - [8、针对接口编程，而不是针对实现编程](#8针对接口编程而不是针对实现编程)
+    - [9、迪米特法则（Law Of Demter）](#9迪米特法则law-of-demter)
+  - [23 种设计模式](#23-种设计模式)
+    - [1、模板方法模式（Template Method Pattern）](#1模板方法模式template-method-pattern)
+    - [2、策略模式（Strategy Pattern）](#2策略模式strategy-pattern)
+    - [3、观察者模式（Observer Pattern）](#3观察者模式observer-pattern)
+    - [4、装饰模式（Decorator Pattern）](#4装饰模式decorator-pattern)
+    - [5、桥模式（Bridge Pattern）](#5桥模式bridge-pattern)
+    - [6、工厂方法模式（Factory Method Pattern）](#6工厂方法模式factory-method-pattern)
+    - [7、抽象工厂模式（Abstract Factory Pattern）](#7抽象工厂模式abstract-factory-pattern)
+    - [8、构建器模式（Builder Pattern）](#8构建器模式builder-pattern)
+    - [9、单例模式（Singleton Pattern）](#9单例模式singleton-pattern)
+      - [单例模式存在的一些问题](#单例模式存在的一些问题)
+    - [10、享元模式（Flyweight Pattern )](#10享元模式flyweight-pattern-)
+    - [11、外观模式（Facade Pattern）---(门面模式)](#11外观模式facade-pattern---门面模式)
+    - [12、代理模式（Proxy Pattern )  ---“接口隔离”模式—————解决耦合度太高的问题](#12代理模式proxy-pattern------接口隔离模式解决耦合度太高的问题)
+    - [13、适配器模式（Adapter Pattern）-----接口隔离”模式——解决耦合度太高的问题](#13适配器模式adapter-pattern-----接口隔离模式解决耦合度太高的问题)
+    - [14、中介者模式（Mediator Pattern） -----接口隔离”模式——解决耦合度太高的问题](#14中介者模式mediator-pattern------接口隔离模式解决耦合度太高的问题)
+    - [14、中介者模式（Mediator Pattern） -----接口隔离”模式——解决耦合度太高的问题](#14中介者模式mediator-pattern------接口隔离模式解决耦合度太高的问题-1)
+
 设计模式是通过抽象等方式提高代码复用，易于扩展，更好的应对开关过程中遇到的一些变化的程序设计模式
 ## 设计模式的目标   
 - 松耦合思想     
@@ -817,8 +849,142 @@ int main() {
 // 在 main 函数中，我们演示了如何使用抽象工厂模式来创建产品家族。根据所选的工厂，我们可以动态地创建不同类型的产品，而无需直接实例化具体产品类。这种模式有助于实现对象的创建与使用的解耦，并且支持创建一组相关的对象。
 ```
 
+### 8、构建器模式（Builder Pattern）
 
-### 8、单例模式（Singleton Pattern）
+构建器模式（Builder Pattern）是一种创建型设计模式，它用于创建一个复杂对象，同时允许你设置其各个部分的属性和内容。构建器模式的核心思想是将一个对象的构建过程（稳定）与创建不同的表示（变化）分离，以便可以创建不同表示的对象。
+
+    “对象创建”模式——绕开new，来避免对象创建（new）过程中所导致的紧耦合（依赖具体类），从而支持对象创建的稳定。它是接口抽象之后的第一步工作。
+
+构建器模式通常包括以下关键组件：
+
+1. 产品类（Product）：表示要构建的复杂对象，它通常包含多个部分或属性。
+
+2. 抽象构建器类（Builder）：定义了构建产品各个部分的抽象方法，以及一个获取最终产品的方法。
+
+3. 具体构建器类（Concrete Builder）：实现了抽象构建器类，负责构建产品的各个部分，并提供方法来设置这些部分的属性。
+
+4. 指挥者类（Director）：负责协调构建者以构建产品。它不直接创建产品，而是通过构建器来完成。
+Z
+5. 客户端（Client）：使用指挥者来创建产品的类。客户端通常不需要知道产品的具体构建细节。  
+
+
+以下是一个简单的C++示例，演示了构建器模式的实现：
+
+```C++
+#include <iostream>
+#include <string>
+
+// 产品类
+class Product {
+public:
+    void setPartA(const std::string& partA) {
+        partA_ = partA;
+    }
+
+    void setPartB(const std::string& partB) {
+        partB_ = partB;
+    }
+
+    void setPartC(const std::string& partC) {
+        partC_ = partC;
+    }
+
+    void show() {
+        std::cout << "Part A: " << partA_ << std::endl;
+        std::cout << "Part B: " << partB_ << std::endl;
+        std::cout << "Part C: " << partC_ << std::endl;
+    }
+
+private:
+    std::string partA_;
+    std::string partB_;
+    std::string partC_;
+};
+
+// 抽象构建器类
+class Builder {
+public:
+    virtual void buildPartA() = 0;
+    virtual void buildPartB() = 0;
+    virtual void buildPartC() = 0;
+    virtual Product getResult() = 0;
+};
+
+// 具体构建器类
+class ConcreteBuilder : public Builder {
+public:
+    ConcreteBuilder() {
+        product_ = new Product();
+    }
+
+    void buildPartA() override {
+        product_->setPartA("Part A");
+    }
+
+    void buildPartB() override {
+        product_->setPartB("Part B");
+    }
+
+    void buildPartC() override {
+        product_->setPartC("Part C");
+    }
+
+    Product getResult() override {
+        return *product_;
+    }
+
+private:
+    Product* product_;
+};
+
+// 指挥者类
+class Director {
+public:
+    Product construct() {
+        builder_->buildPartA();
+        builder_->buildPartB();
+        builder_->buildPartC();
+        return builder_->getResult();
+    }
+
+    void setBuilder(Builder* builder) {
+        builder_ = builder;
+    }
+
+private:
+    Builder* builder_;
+};
+
+int main() {
+    ConcreteBuilder builder;
+    Director director;
+    director.setBuilder(&builder);
+
+    Product product = director.construct();
+    product.show();
+
+    return 0;
+}
+
+//在这个示例中，我们有以下关键要点：
+
+// Product 是要构建的复杂对象，它包含了多个部分（Part A、Part B 和 Part C）的属性。
+
+// Builder 是抽象构建器类，定义了构建产品各个部分的抽象方法以及获取最终产品的方法。
+
+// ConcreteBuilder 是具体构建器类，实现了抽象构建器类的方法，并负责构建产品的各个部分。
+
+// Director 是指挥者类，负责协调构建器来构建产品。客户端通过指挥者来创建产品，而不需要直接与构建器交互。
+
+// 在 main 函数中，我们创建了一个具体构建器 ConcreteBuilder 和一个指挥者 Director。通过指挥者，我们构建了一个产品，并通过 show() 方法展示了产品的各个部分。
+
+// 构建器模式的优点是能够构建复杂的对象，并且可以根据需要定制对象的部分属性。这有助于将构建细节与
+```
+
+
+
+
+### 9、单例模式（Singleton Pattern）
 
 单例模式（Singleton Pattern）是一种创建型设计模式，用于确保一个类只有一个实例，并提供一种全局访问点来访问该实例。这对于需要在整个应用程序中共享某个资源的情况非常有用，例如配置信息、日志记录器、数据库连接等。
 
@@ -971,7 +1137,7 @@ Singleton一般不支持拷贝构造函数和Clone接口，有可能导致多个
 
 注意双检查锁
 
-### 9、享元模式（Flyweight Pattern )
+### 10、享元模式（Flyweight Pattern )
 享元模式（Flyweight Pattern）是一种结构型设计模式，旨在最小化对象的内存使用或计算成本，同时分享尽可能多的相似对象。它适用于具有大量相似对象的情况，以减少内存占用和提高性能。
 
 享元模式的核心思想是将对象分为两个部分：内部状态（Intrinsic State）和外部状态（Extrinsic State）。
@@ -1045,16 +1211,344 @@ int main() {
 享元模式的关键是在需要共享对象时使用享元工厂，确保尽可能多地共享相似对象，从而降低内存和性能开销。这对于大量相似对象的情况非常有用，如文本编辑器中的字符或游戏中的粒子。
 
 
-### 10、外观模式（Facade Pattern）---(门面模式)
+### 11、外观模式（Facade Pattern）---(门面模式)
 
 外观模式（Facade Pattern）是一种结构型设计模式，旨在为一个复杂子系统提供一个简化的接口，从而使客户端更容易使用该子系统。外观模式充当了客户端与子系统之间的中介，隐藏了子系统的复杂性，提供了一个高层接口，使客户端更容易调用子系统的功能。
 
 外观模式的关键思想是引入一个外观类（Facade Class），它包含了子系统的一组接口方法，并提供了一个统一的入口点，使客户端可以通过调用外观类的方法来访问子系统的功能，而不需要了解子系统的内部工作。
 
 
+1. 以下是一个简单的C++示例，演示了外观模式的实现：
+```C++
+   #include <iostream>
 
-### 10、外观模式（Facade Pattern）
+// 子系统类 A
+class SubsystemA {
+public:
+    void operationA() {
+        std::cout << "Subsystem A operation" << std::endl;
+    }
+};
 
+// 子系统类 B
+class SubsystemB {
+public:
+    void operationB() {
+        std::cout << "Subsystem B operation" << std::endl;
+    }
+};
+
+// 子系统类 C
+class SubsystemC {
+public:
+    void operationC() {
+        std::cout << "Subsystem C operation" << std::endl;
+    }
+};
+
+// 外观类
+class Facade {
+private:
+    SubsystemA subsystemA;
+    SubsystemB subsystemB;
+    SubsystemC subsystemC;
+
+public:
+    Facade() {
+        // 在外观类的构造函数中初始化子系统对象
+    }
+
+    void operation() {
+        // 外观类将客户端请求委派给子系统
+        subsystemA.operationA();
+        subsystemB.operationB();
+        subsystemC.operationC();
+    }
+};
+
+int main() {
+    // 客户端代码只需要与外观类交互
+    Facade facade;
+    facade.operation();
+
+    return 0;
+}
+
+// 在这个示例中，我们有以下关键要点：
+
+// SubsystemA、SubsystemB 和 SubsystemC 分别代表子系统的一部分，每个子系统具有自己的操作。
+
+// Facade 是外观类，它组合了这些子系统，并提供了一个统一的接口 operation()，客户端只需要与外观类交互。
+
+// 在 main 函数中，我们创建了一个外观对象 facade，并通过它来调用子系统的操作。客户端代码不需要了解子系统的复杂性，只需要调用外观类的方法即可。
+
+// 外观模式有助于减少客户端与子系统之间的耦合，提高了代码的可维护性和可读性。
+// 它还允许你将子系统的实现细节隐藏起来，从而降低了对子系统的直接访问。这在需要将复杂性封装起来的情况下非常有用。
+// 外观模式也常用于库或框架中，以提供简化的接口供用户使用。
+
+```
+
+
+2. **总结**
+
+从客户角度看，门面模式简化了一整个组件系统的接口，内部的变化不会影响到门面接口的变化
+更注重从架构的层次去看整个系统，而不是单个的层次，更像一种架构设计模式
+并不是一个集装箱，任意放入任意对象，而是耦合度比较大的一系列组件
+
+### 12、代理模式（Proxy Pattern )  ---“接口隔离”模式—————解决耦合度太高的问题
+
+代理模式（Proxy Pattern）是一种结构型设计模式，它提供了一个代理对象来控制对另一个对象的访问。代理通常充当客户端和实际目标对象之间的中介，以添加额外的控制和管理。
+
+代理模式有多种类型，包括静态代理和动态代理。在静态代理中，代理类和目标类都在编译时已知，而在动态代理中，代理类在运行时生成。
+
+**适用场景**
+
+对于对象的操作出现不方便的情况，尤其是分布式系统中
+
+
+代理模式通常用于以下情况：
+
+1. 远程代理：代理对象在不同地址空间中，用于访问远程对象。这是远程过程调用（RPC）的一种常见实现方式。
+
+1. 虚拟代理：代理对象用于延迟创建和初始化开销大的对象，直到真正需要访问这些对象时。例如，加载大型图像或文档时可以使用虚拟代理。
+
+1. 保护代理：代理对象控制对真实对象的访问权限，可以用于实现权限控制、缓存、日志记录等功能。
+
+1. 缓存代理：代理对象缓存对真实对象的请求结果，以提高性能。
+
+代理模式的关键是在代理对象中实现与被代理对象相同的接口，以便客户端可以无差异地访问代理对象和真实对象。
+以下是一个简单的C++示例，演示了代理模式的实现：
+```C++
+#include <iostream>
+
+// 抽象主题接口
+class Subject {
+public:
+    virtual void request() = 0;
+};
+
+// 具体主题类
+class RealSubject : public Subject {
+public:
+    void request() override {
+        std::cout << "RealSubject: Handling request" << std::endl;
+    }
+};
+
+// 代理类
+class Proxy : public Subject {
+private:
+    RealSubject* realSubject;
+
+public:
+    Proxy() : realSubject(nullptr) {}
+
+    void request() override {
+        // 在需要时创建真实对象
+        if (realSubject == nullptr) {
+            realSubject = new RealSubject();
+        }
+        realSubject->request();
+    }
+};
+
+int main() {
+    Proxy proxy;
+
+    // 客户端代码通过代理访问真实对象
+    proxy.request();
+
+    return 0;
+}
+```
+在这个示例中，我们有以下关键要点：
+
+Subject 是抽象主题接口，定义了一个 request() 方法。
+
+RealSubject 是具体主题类，实现了 Subject 接口，并处理真正的请求。
+
+Proxy 是代理类，也实现了 Subject 接口，它包含一个指向 RealSubject 对象的指针。在 request() 方法中，代理对象会在需要时创建真实对象，并将请求委派给真实对象。
+
+在 main 函数中，我们创建了一个代理对象 proxy，并通过它来访问真实对象。客户端代码只需要与代理对象交互，而无需直接与真实对象交互。
+
+代理模式有助于控制对真实对象的访问，可以在代理对象中添加额外的功能，如权限控制、缓存、延迟加载等。它提供了一种更灵活的方式来管理对象之间的关系。
+
+**总结**    
+从客户角度看，使用代理和没有使用代理的方式，接口基本没有区别，看起来简单，实际使用较为复杂，部分使用工具完成代理的实现，在分布式系统中最常且大量使用
+
+
+### 13、适配器模式（Adapter Pattern）-----接口隔离”模式——解决耦合度太高的问题
+适配器模式（Adapter Pattern）是一种结构型设计模式，用于将一个类的接口转换成另一个客户端期望的接口。适配器模式允许不兼容的接口能够一起工作，通常用于以下情况：
+
+
+1. 当你想使用一个已经存在的类，但它的接口与你的需要不匹配时。
+2. 当你想创建一个可以复用的类，与一些不相关或不可预见的类协同工作时。
+
+适配器模式有两种主要类型：类适配器和对象适配器。以下是它们的简要说明：
+
+1. 类适配器：通过多重继承来实现适配器。在C++中，这通常通过一个适配器类继承目标类并实现源接口来完成。
+
+2. 对象适配器：通过将源对象嵌入到适配器中来实现适配器。在C++中，这通常通过组合目标类和源对象来完成。
+
+下面是一个C++示例，演示了类适配器的实现：
+```C++
+#include <iostream>
+
+// 目标接口
+class Target {
+public:
+    virtual void request() = 0;
+};
+
+// 源类（需要适配的类）
+class Adaptee {
+public:
+    void specificRequest() {
+        std::cout << "Adaptee's specificRequest()" << std::endl;
+    }
+};
+
+// 类适配器
+class Adapter : public Target, private Adaptee {
+public:
+    void request() override {
+        specificRequest();
+    }
+};
+
+int main() {
+    Target* adapter = new Adapter();
+    adapter->request();
+
+    delete adapter;
+
+    return 0;
+}
+```
+在这个示例中，我们有以下关键要点：
+
+- Target 是目标接口，定义了一个 request() 纯虚函数。
+
+- Adaptee 是源类，它具有一个名为 specificRequest() 的特定方法。
+
+- Adapter 是适配器类，它继承了 Target 接口，并通过多重继承私有继承了 Adaptee 类。在 request() 方法中，适配器调用了 specificRequest() 方法来适应目标接口。
+
+在 main 函数中，我们创建了一个适配器对象，并通过目标接口调用了 request() 方法。适配器类的存在使得目标接口可以使用 specificRequest() 方法，即使它们的接口不兼容。
+
+适配器模式是一种有用的设计模式，可以将不兼容的接口整合在一起，使得既有的类能够协同工作，同时不影响它们的原始代码。
+
+
+**总结**    
+希望复用一些现有的类，但现有接口与需要复用的环境不一致,实际上适配器有对象适配器和类适配器，但是对象适配器采用组合的方式，更加灵活，满足低耦合，**不推荐使用类适配器,注意和装饰模式的区别**
+
+### 14、中介者模式（Mediator Pattern） -----接口隔离”模式——解决耦合度太高的问题
+中介者模式（Mediator Pattern）是一种行为型设计模式，旨在降低对象之间的直接耦合关系。在中介者模式中，一个中介者对象封装了一系列对象之间的交互，使得这些对象不再显式地相互引用，而是通过中介者来进行通信。这有助于减少对象之间的依赖关系，提高系统的灵活性和可维护性。
+
+中介者模式适用于以下情况：
+
+1. 当一个系统中的对象之间的通信方式变得复杂，导致对象之间紧密耦合时。
+1. 当需要一个独立的对象来处理对象之间的交互，以避免对象之间的直接通信。
+1. 当希望系统具有更好的可扩展性，以便将新对象添加到系统中而无需更改现有对象之间的通信方式。
+
+**使用中介者，来封装各个对象之间的相互引用（封装变化）；将编译时依赖转变为运行时依赖**
+
+以下是一个简单的C++示例，演示了中介者模式的实现：
+```C++
+#include <iostream>
+#include <string>
+#include <vector>
+
+// 抽象中介者类
+class Mediator {
+public:
+    virtual void sendMessage(const std::string& message, Colleague* colleague) = 0;
+};
+
+// 具体中介者类
+class ConcreteMediator : public Mediator {
+private:
+    std::vector<Colleague*> colleagues;
+
+public:
+    void addColleague(Colleague* colleague) {
+        colleagues.push_back(colleague);
+    }
+
+    void sendMessage(const std::string& message, Colleague* sender) override {
+        for (Colleague* colleague : colleagues) {
+            if (colleague != sender) {
+                colleague->receiveMessage(message);
+            }
+        }
+    }
+};
+
+// 抽象同事类
+class Colleague {
+protected:
+    Mediator* mediator;
+
+public:
+    Colleague(Mediator* mediator) : mediator(mediator) {}
+
+    virtual void send(const std::string& message) = 0;
+    virtual void receiveMessage(const std::string& message) = 0;
+};
+
+// 具体同事类
+class ConcreteColleague : public Colleague {
+public:
+    ConcreteColleague(Mediator* mediator) : Colleague(mediator) {}
+
+    void send(const std::string& message) {
+        std::cout << "Sending message: " << message << std::endl;
+        mediator->sendMessage(message, this);
+    }
+
+    void receiveMessage(const std::string& message) {
+        std::cout << "Received message: " << message << std::endl;
+    }
+};
+
+int main() {
+    ConcreteMediator mediator;
+
+    ConcreteColleague colleague1(&mediator);
+    ConcreteColleague colleague2(&mediator);
+
+    mediator.addColleague(&colleague1);
+    mediator.addColleague(&colleague2);
+
+    colleague1.send("Hello, colleague2!");
+    colleague2.send("Hi, colleague1!");
+
+    return 0;
+}
+```
+在这个示例中，我们有以下关键要点：
+
+- Mediator 是抽象中介者类，定义了一个 sendMessage() 方法，用于同事对象之间的通信。
+
+- ConcreteMediator 是具体中介者类，它维护了一个同事对象列表，可以添加同事对象，并在收到消息时将消息广播给其他同事对象。
+
+- Colleague 是抽象同事类，包含一个指向中介者的指针，定义了 send() 和 receiveMessage() 方法。
+
+- ConcreteColleague 是具体同事类，它实现了抽象同事类的方法，通过中介者来发送和接收消息。
+
+在 main 函数中，我们创建了一个中介者对象 mediator 和两个同事对象 colleague1 和 colleague2，然后将它们添加到中介者中。同事对象可以通过中介者来发送和接收消息，而不需要直接与其他同事对象通信。
+
+中介者模式有助于减少对象之间的直接依赖关系，提高系统的可维护性和可扩展性。它适用于对象之间的通信复杂且紧密耦合的情况，通过引入中介者对象，可以将通信逻辑集中管理，降低系统的复杂性。
+
+
+**总结**    
+将多个对象间的关联关系解耦，利用中介者集中管理，将其转变为多个对象和一个中介者关联,可以对中介者进行分解处理与门面模式区别，门面模式是解耦系统间（单向）的关联关系，而中介者是解耦各个对象之间（双向）的关联关系
+
+
+
+
+
+
+### 14、中介者模式（Mediator Pattern） -----接口隔离”模式——解决耦合度太高的问题
 
 
 
