@@ -21,15 +21,24 @@
     - [5、桥模式（Bridge Pattern）](#5桥模式bridge-pattern)
     - [6、工厂方法模式（Factory Method Pattern）](#6工厂方法模式factory-method-pattern)
     - [7、抽象工厂模式（Abstract Factory Pattern）](#7抽象工厂模式abstract-factory-pattern)
-    - [8、构建器模式（Builder Pattern）](#8构建器模式builder-pattern)
-    - [9、单例模式（Singleton Pattern）](#9单例模式singleton-pattern)
+    - [8、原型模式（Prototype Pattern） -------对象创建”模式——绕开new](#8原型模式prototype-pattern--------对象创建模式绕开new)
+    - [9、构建器模式（Builder Pattern）](#9构建器模式builder-pattern)
+    - [10、单例模式（Singleton Pattern）](#10单例模式singleton-pattern)
       - [1. 单例模式存在的一些问题](#1-单例模式存在的一些问题)
-    - [10、享元模式（Flyweight Pattern )](#10享元模式flyweight-pattern-)
-    - [11、外观模式（Facade Pattern）---(门面模式)](#11外观模式facade-pattern---门面模式)
+    - [11、享元模式（Flyweight Pattern )](#11享元模式flyweight-pattern-)
+    - [13、外观模式（Facade Pattern）---(门面模式)](#13外观模式facade-pattern---门面模式)
     - [12、代理模式（Proxy Pattern )  ---“接口隔离”模式—————解决耦合度太高的问题](#12代理模式proxy-pattern------接口隔离模式解决耦合度太高的问题)
-    - [13、适配器模式（Adapter Pattern）-----接口隔离”模式——解决耦合度太高的问题](#13适配器模式adapter-pattern-----接口隔离模式解决耦合度太高的问题)
-    - [14、中介者模式（Mediator Pattern） -----接口隔离”模式——解决耦合度太高的问题](#14中介者模式mediator-pattern------接口隔离模式解决耦合度太高的问题)
-    - [14、中介者模式（Mediator Pattern） -----接口隔离”模式——解决耦合度太高的问题](#14中介者模式mediator-pattern------接口隔离模式解决耦合度太高的问题-1)
+    - [14、适配器模式（Adapter Pattern）-----接口隔离”模式——解决耦合度太高的问题](#14适配器模式adapter-pattern-----接口隔离模式解决耦合度太高的问题)
+    - [15、中介者模式（Mediator Pattern） -----接口隔离”模式——解决耦合度太高的问题](#15中介者模式mediator-pattern------接口隔离模式解决耦合度太高的问题)
+    - [16、状态模式（State Pattern） -----针对对象变化进行管理，维持高层模块稳定](#16状态模式state-pattern------针对对象变化进行管理维持高层模块稳定)
+    - [17、备忘录模式（Memento Pattern） ----状态变化”模式——针对对象变化进行管理，维持高层模块稳定](#17备忘录模式memento-pattern-----状态变化模式针对对象变化进行管理维持高层模块稳定)
+    - [18、组合模式（Composite Pattern） ----“数据结构”模式——将特定数据结构封装在内部，在外部提供统一的接口，来实现与特定数据结构无关的访问](#18组合模式composite-pattern-----数据结构模式将特定数据结构封装在内部在外部提供统一的接口来实现与特定数据结构无关的访问)
+    - [19、迭代器模式（Iterator Pattern） ----“数据结构”模式——将特定数据结构封装在内部，在外部提供统一的接口，来实现与特定数据结构无关的访问](#19迭代器模式iterator-pattern-----数据结构模式将特定数据结构封装在内部在外部提供统一的接口来实现与特定数据结构无关的访问)
+    - [20、职责链模式（Chain of Responsibility Pattern） ----数据结构”模式——将特定数据结构封装在内部，在外部提供统一的接口，来实现与特定数据结构无关的访问](#20职责链模式chain-of-responsibility-pattern-----数据结构模式将特定数据结构封装在内部在外部提供统一的接口来实现与特定数据结构无关的访问)
+    - [21、命令模式（Command Pattern） ----“行为变化”模式](#21命令模式command-pattern-----行为变化模式)
+    - [22、访问者模式（Visitor Pattern） ----“行为变化”模式](#22访问者模式visitor-pattern-----行为变化模式)
+    - [23、解析器模式（Parser Pattern） ----“行为变化”模式](#23解析器模式parser-pattern-----行为变化模式)
+  - [参考文档](#参考文档)
 
 设计模式是通过抽象等方式提高代码复用，易于扩展，更好的应对开关过程中遇到的一些变化的程序设计模式
 ## 设计模式的目标   
@@ -848,8 +857,83 @@ int main() {
 
 // 在 main 函数中，我们演示了如何使用抽象工厂模式来创建产品家族。根据所选的工厂，我们可以动态地创建不同类型的产品，而无需直接实例化具体产品类。这种模式有助于实现对象的创建与使用的解耦，并且支持创建一组相关的对象。
 ```
+### 8、原型模式（Prototype Pattern） -------对象创建”模式——绕开new
 
-### 8、构建器模式（Builder Pattern）
+原型模式（Prototype Pattern）是一种创建型设计模式，用于创建对象的一种机制，它允许你复制现有对象，而无需暴露其内部细节。这样可以提高性能和代码的可维护性，同时降低了对象的创建成本。
+
+在原型模式中，通常有以下几个关键角色：
+1. Prototype（原型）：定义了克隆自身的接口。通常包括一个clone()方法，用于复制自身的实例。
+1. ConcretePrototype（具体原型）：实现了Prototype接口，并负责克隆自身的实例。
+1. Client（客户端）：通过克隆来创建新对象的客户端。
+原型模式的核心思想是通过克隆现有对象来创建新对象，而不是通过直接的构造方法。这对于创建成本高昂或复杂的对象特别有用。
+
+下面是一个简单的C++示例，演示了原型模式的实现：
+
+```c++
+#include <iostream>
+#include <string>
+// 抽象原型类
+class Prototype {
+public:
+    virtual Prototype* clone() const = 0;
+    virtual void printInfo() const = 0;
+};
+
+// 具体原型类
+class ConcretePrototype : public Prototype {
+private:
+    std::string data;
+
+public:
+    ConcretePrototype(const std::string& data) : data(data) {}
+
+    Prototype* clone() const override {
+        return new ConcretePrototype(*this);
+    }
+
+    void printInfo() const override {
+        std::cout << "Data: " << data << std::endl;
+    }
+};
+
+int main() {
+    // 创建原型对象
+    Prototype* prototype = new ConcretePrototype("Original Data");
+
+    // 克隆原型对象
+    Prototype* cloned = prototype->clone();
+
+    // 打印信息
+    prototype->printInfo();
+    cloned->printInfo();
+
+    // 释放内存
+    delete prototype;
+    delete cloned;
+
+    return 0;
+}
+
+```
+在这个示例中，我们有以下关键要点：
+- Prototype 是抽象原型类，定义了克隆自身和打印信息的接口。
+- ConcretePrototype 是具体原型类，它实现了Prototype接口的方法，包括克隆和打印信息。
+
+在main函数中，我们首先创建了一个原型对象prototype，然后通过克隆方法创建了一个新的对象cloned，最后打印了它们的信息。
+
+原型模式允许您创建新对象，而无需了解其具体构造细节，只需复制现有对象即可。这对于某些情况下（例如，对象创建成本高或对象构造复杂）非常有用，因为它可以提高性能并简化代码。
+
+
+
+适用场景        
+大体与工厂模式相同。主要用于处理“结构比较复杂的对象”的创建工作。
+
+总结        
+结构比较复杂的对象，在使用工厂模式时，创建对象的过程也比较复杂，甚至可能出现错误，借助C++的拷贝构造函数，可以轻松解决此问题
+面对问题为仅仅需要注册新对象而不设计对象内部复杂使用过程，且接口稳定
+用法简单，但使用较少
+
+### 9、构建器模式（Builder Pattern）
 
 构建器模式（Builder Pattern）是一种创建型设计模式，它用于创建一个复杂对象，同时允许你设置其各个部分的属性和内容。构建器模式的核心思想是将一个对象的构建过程（稳定）与创建不同的表示（变化）分离，以便可以创建不同表示的对象。
 
@@ -984,7 +1068,7 @@ int main() {
 
 
 
-### 9、单例模式（Singleton Pattern）
+### 10、单例模式（Singleton Pattern）
 
 单例模式（Singleton Pattern）是一种创建型设计模式，用于确保一个类只有一个实例，并提供一种全局访问点来访问该实例。这对于需要在整个应用程序中共享某个资源的情况非常有用，例如配置信息、日志记录器、数据库连接等。
 
@@ -1138,7 +1222,7 @@ Singleton一般不支持拷贝构造函数和Clone接口，有可能导致多个
 
 注意双检查锁
 
-### 10、享元模式（Flyweight Pattern )
+### 11、享元模式（Flyweight Pattern )
 享元模式（Flyweight Pattern）是一种结构型设计模式，旨在最小化对象的内存使用或计算成本，同时分享尽可能多的相似对象。它适用于具有大量相似对象的情况，以减少内存占用和提高性能。
 
 享元模式的核心思想是将对象分为两个部分：内部状态（Intrinsic State）和外部状态（Extrinsic State）。
@@ -1212,7 +1296,7 @@ int main() {
 享元模式的关键是在需要共享对象时使用享元工厂，确保尽可能多地共享相似对象，从而降低内存和性能开销。这对于大量相似对象的情况非常有用，如文本编辑器中的字符或游戏中的粒子。
 
 
-### 11、外观模式（Facade Pattern）---(门面模式)
+### 13、外观模式（Facade Pattern）---(门面模式)
 
 外观模式（Facade Pattern）是一种结构型设计模式，旨在为一个复杂子系统提供一个简化的接口，从而使客户端更容易使用该子系统。外观模式充当了客户端与子系统之间的中介，隐藏了子系统的复杂性，提供了一个高层接口，使客户端更容易调用子系统的功能。
 
@@ -1378,7 +1462,7 @@ Proxy 是代理类，也实现了 Subject 接口，它包含一个指向 RealSub
 从客户角度看，使用代理和没有使用代理的方式，接口基本没有区别，看起来简单，实际使用较为复杂，部分使用工具完成代理的实现，在分布式系统中最常且大量使用
 
 
-### 13、适配器模式（Adapter Pattern）-----接口隔离”模式——解决耦合度太高的问题
+### 14、适配器模式（Adapter Pattern）-----接口隔离”模式——解决耦合度太高的问题
 适配器模式（Adapter Pattern）是一种结构型设计模式，用于将一个类的接口转换成另一个客户端期望的接口。适配器模式允许不兼容的接口能够一起工作，通常用于以下情况：
 
 
@@ -1442,7 +1526,7 @@ int main() {
 **总结**    
 希望复用一些现有的类，但现有接口与需要复用的环境不一致,实际上适配器有对象适配器和类适配器，但是对象适配器采用组合的方式，更加灵活，满足低耦合，**不推荐使用类适配器,注意和装饰模式的区别**
 
-### 14、中介者模式（Mediator Pattern） -----接口隔离”模式——解决耦合度太高的问题
+### 15、中介者模式（Mediator Pattern） -----接口隔离”模式——解决耦合度太高的问题
 中介者模式（Mediator Pattern）是一种行为型设计模式，旨在降低对象之间的直接耦合关系。在中介者模式中，一个中介者对象封装了一系列对象之间的交互，使得这些对象不再显式地相互引用，而是通过中介者来进行通信。这有助于减少对象之间的依赖关系，提高系统的灵活性和可维护性。
 
 中介者模式适用于以下情况：
@@ -1549,11 +1633,1137 @@ int main() {
 
 
 
-### 14、中介者模式（Mediator Pattern） -----接口隔离”模式——解决耦合度太高的问题
+### 16、状态模式（State Pattern） -----针对对象变化进行管理，维持高层模块稳定
+
+状态模式（State Pattern）是一种行为型设计模式，用于管理对象的状态和状态之间的转换。状态模式的核心思想是将对象的行为与其状态分离，使对象在不同状态下可以有不同的行为。这有助于减少条件语句的使用，并提高代码的可维护性和可扩展性。
+
+在状态模式中，通常有以下几个关键角色：
+
+1. Context（上下文）：维护一个对当前状态对象的引用，并根据状态对象来执行不同的行为。上下文类通常包括了状态对象的切换方法。
+
+1. State（状态）：定义了一个接口或抽象类，用于表示一个具体状态。具体的状态类实现这个接口或继承抽象类，以实现特定状态下的行为。
+
+下面是一个简单的C++示例，演示了状态模式的实现：
+```C++
+#include <iostream>
+
+// 抽象状态类
+class State {
+public:
+    virtual void handle() = 0;
+};
+
+// 具体状态类 A
+class ConcreteStateA : public State {
+public:
+    void handle() override {
+        std::cout << "State A handled" << std::endl;
+    }
+};
+
+// 具体状态类 B
+class ConcreteStateB : public State {
+public:
+    void handle() override {
+        std::cout << "State B handled" << std::endl;
+    }
+};
+
+// 上下文类
+class Context {
+private:
+    State* currentState;
+
+public:
+    Context() : currentState(nullptr) {}
+
+    void setState(State* newState) {
+        currentState = newState;
+    }
+
+    void request() {
+        if (currentState) {
+            currentState->handle();
+        } else {
+            std::cout << "No state set" << std::endl;
+        }
+    }
+};
+
+int main() {
+    Context context;
+
+    // 初始状态为 State A
+    context.setState(new ConcreteStateA);
+    context.request();  // 输出 "State A handled"
+
+    // 切换到 State B
+    context.setState(new ConcreteStateB);
+    context.request();  // 输出 "State B handled"
+
+    return 0;
+}
+```
+在这个示例中，我们有以下关键要点：
+
+- State 是抽象状态类，定义了一个纯虚函数 handle()，用于表示状态下的行为。
+
+- ConcreteStateA 和 ConcreteStateB 是具体状态类，它们实现了 State 接口，并分别表示不同的状态下的行为。
+
+- Context 是上下文类，它维护了对当前状态对象的引用，并在 request() 方法中执行相应的行为。
+
+在 main 函数中，我们创建了一个上下文对象 context，并设置了初始状态为 State A，然后通过 request() 方法执行不同状态下的行为。
+
+状态模式有助于将对象的状态转换和行为与主要逻辑分开，使系统更容易扩展和维护。它尤其适用于具有多种状态和状态之间复杂转换的场景，能够提高代码的可读性和可维护性。
+
+
+ 总结   
+虚函数就是运行时的if-else,将所有与一个特定状态相关的行为都放入一个State的子类中，实现了具体操作与状态转换之间的解耦
+转换是原子性的，要么彻底转换，要么不转换如果State对象没有实例变量，可以共享一个State对象（单例模式）
+
+### 17、备忘录模式（Memento Pattern） ----状态变化”模式——针对对象变化进行管理，维持高层模块稳定
+
+备忘录模式（Memento Pattern）是一种行为型设计模式，用于捕获一个对象的内部状态，并在不破坏对象封装性的前提下，保存和恢复对象之前的状态。备忘录模式通常用于以下情况：
+
+1. 需要保存一个对象的历史状态，以便能够回滚到先前的状态。
+1. 当直接访问对象的状态会导致封装破坏时，可以使用备忘录来访问对象的状态。
+1. 当希望提供撤销（Undo）操作的功能时，备忘录模式可以用来实现。
+
+(Note: 某些对象状态会改变，但系统有时需要回溯到对象之前的某个状态，如果使用公共接口让其他对象得到该对象的状态，可能会暴露对象的细节实现)
+
+在备忘录模式中，通常有以下几个关键角色：
+
+1. Originator（发起人）：负责创建备忘录并记录当前状态，也可以使用备忘录来恢复自己的状态。
+1. Memento（备忘录）：用于存储Originator对象的内部状态，通常提供一种机制来获取状态或恢复状态。
+1. Caretaker（负责人）：负责保存备忘录，但不直接访问备忘录的内容。负责人通常只负责存储和获取备忘录，以及将备忘录传递给Originator。
+
+
+下面是一个简单的C++示例，演示了备忘录模式的实现：
+```C++
+#include <iostream>
+#include <string>
+
+// 备忘录类
+class Memento {
+private:
+    std::string state;
+
+public:
+    Memento(const std::string& s) : state(s) {}
+
+    std::string getState() const {
+        return state;
+    }
+};
+
+// 发起人类
+class Originator {
+private:
+    std::string state;
+
+public:
+    void setState(const std::string& s) {
+        state = s;
+    }
+
+    std::string getState() const {
+        return state;
+    }
+
+    // 创建备忘录
+    Memento createMemento() const {
+        return Memento(state);
+    }
+
+    // 恢复状态
+    void restoreMemento(const Memento& m) {
+        state = m.getState();
+    }
+};
+
+// 负责人类
+class Caretaker {
+private:
+    Memento memento;
+
+public:
+    void saveMemento(const Memento& m) {
+        memento = m;
+    }
+
+    Memento getMemento() const {
+        return memento;
+    }
+};
+
+int main() {
+    Originator originator;
+    Caretaker caretaker;
+
+    // 设置初始状态
+    originator.setState("State 1");
+    std::cout << "Current state: " << originator.getState() << std::endl;
+
+    // 保存备忘录
+    caretaker.saveMemento(originator.createMemento());
+
+    // 修改状态
+    originator.setState("State 2");
+    std::cout << "Current state: " << originator.getState() << std::endl;
+
+    // 恢复状态
+    originator.restoreMemento(caretaker.getMemento());
+    std::cout << "Restored state: " << originator.getState() << std::endl;
+
+    return 0;
+}
+```
+在这个示例中，我们有以下关键要点：  
+- Memento 是备忘录类，用于存储Originator对象的内部状态。
+- Originator 是发起人类，它负责创建备忘录、保存状态到备忘录和从备忘录中恢复状态。
+- Caretaker 是负责人类，它负责保存备忘录，并可以获取备忘录以实现状态的恢复。    
+在 main 函数中，我们创建了一个Originator对象和一个Caretaker对象，通过Originator对象设置和保存状态，并通过Caretaker对象恢复状态。这个示例演示了备忘录模式的基本原理，可以用于实现状态的保存和恢复功能。
+
+
+总结    
+- 某种程度上已经过时，今天的语言与框架提供了很多类似的功能
+- 核心是信息隐藏，即原发器需要向外界隐藏信息，也需要将对象状态保存在外界
+- 实现了类似深拷贝的功能，在对象较为复杂的情况下，往往采取效率较高的序列化方案来实现
+
+### 18、组合模式（Composite Pattern） ----“数据结构”模式——将特定数据结构封装在内部，在外部提供统一的接口，来实现与特定数据结构无关的访问
+
+组合模式（Composite Pattern）是一种结构型设计模式，用于将对象组合成树形结构以表示“部分-整体”的层次结构。组合模式允许客户端统一对待单个对象和组合对象，从而使得系统更具扩展性和一致性。
+
+在组合模式中，通常有以下几个关键角色：
+
+1. Component（组件）：是抽象类或接口，它声明了组合对象和叶子对象的通用接口，可以包括一些默认的行为。
+
+1. Leaf（叶子）：是组合中的叶子节点，它没有子节点，实现了Component接口。
+
+1. Composite（组合）：是包含子组件的组合对象，它可以包括其他叶子或组合对象。Composite类通常实现了Component接口，它可以递归地调用子组件的操作。
+
+组合模式的关键思想是，将叶子和组合对象都视为Component的子类，使它们具有相同的接口，从而能够在不区分叶子和组合对象的情况下组合它们。
+
+下面是一个简单的C++示例，演示了组合模式的实现：
+```c++
+#include <iostream>
+#include <vector>
+
+// 抽象组件类
+class Component {
+public:
+    virtual void operation() = 0;
+};
+
+// 叶子类
+class Leaf : public Component {
+public:
+    void operation() override {
+        std::cout << "Leaf operation" << std::endl;
+    }
+};
+
+// 组合类
+class Composite : public Component {
+private:
+    std::vector<Component*> children;
+
+public:
+    void add(Component* component) {
+        children.push_back(component);
+    }
+
+    void operation() override {
+        std::cout << "Composite operation" << std::endl;
+        for (Component* component : children) {
+            component->operation();
+        }
+    }
+};
+
+int main() {
+    Leaf leaf1, leaf2;
+    Composite composite;
+
+    composite.add(&leaf1);
+    composite.add(&leaf2);
+
+    composite.operation();
+
+    return 0;
+}
+```
+在这个示例中，我们有以下关键要点：
+
+- Component 是抽象组件类，声明了一个纯虚函数 operation() 用于表示操作。
+
+- Leaf 是叶子类，实现了Component接口。
+
+- Composite 是组合类，它包含了一个存储子组件的容器，并在operation()方法中递归地调用子组件的操作。
+
+在main函数中，我们创建了两个叶子对象leaf1和leaf2，以及一个组合对象composite，并将叶子对象添加到组合对象中。然后，我们通过调用组合对象的operation()方法，可以递归地执行叶子和组合对象的操作。
+
+组合模式有助于构建具有层次结构的对象，使得客户端可以统一对待单个对象和组合对象。这提高了系统的可扩展性，允许你以递归方式处理复杂的结构。
+
+
+总结    
+- 采用树形结构实现，将复杂的“一对一”和“一对多”统一，使客户代码可以一致的处理对象和对象容器，无需担心是单个对象还是对象容器
+- 将客户代码与复杂容器对象解耦，客户代码面对纯粹的抽象接口
+- 具体实现中，可以让父对象的子对象反向回溯，如果父对象有频繁的遍历需求，可以使用缓存改善效率
+
+### 19、迭代器模式（Iterator Pattern） ----“数据结构”模式——将特定数据结构封装在内部，在外部提供统一的接口，来实现与特定数据结构无关的访问
+迭代器模式（Iterator Pattern）是一种行为型设计模式，它提供了一种方法来顺序访问一个聚合对象中的各个元素，而不暴露聚合对象的内部表示。迭代器模式将遍历算法与聚合对象分离，使得客户端可以独立地遍历不同类型的聚合对象，同时保持了封装性。
+
+在迭代器模式中，通常有以下几个关键角色：
+
+1. Iterator（迭代器）：定义了访问和遍历元素的接口，包括获取下一个元素、判断是否还有元素等方法。
+1. ConcreteIterator（具体迭代器）：实现了Iterator接口，用于具体聚合对象的遍历。
+1. Aggregate（聚合）：定义了创建迭代器对象的接口，一般包括一个名为createIterator()的方法。
+1. ConcreteAggregate（具体聚合）：实现了Aggregate接口，它具体实例化了一个迭代器对象，通常通过createIterator()方法返回。
+
+下面是一个简单的C++示例，演示了迭代器模式的实现：
+```C++
+#include <iostream>
+#include <vector>
+
+// 抽象迭代器
+class Iterator {
+public:
+    virtual int next() = 0;
+    virtual bool hasNext() = 0;
+};
+
+// 具体迭代器
+class ConcreteIterator : public Iterator {
+private:
+    std::vector<int> collection;
+    int position;
+
+public:
+    ConcreteIterator(const std::vector<int>& coll) : collection(coll), position(0) {}
+
+    int next() override {
+        int current = collection[position];
+        position++;
+        return current;
+    }
+
+    bool hasNext() override {
+        return position < collection.size();
+    }
+};
+
+// 抽象聚合
+class Aggregate {
+public:
+    virtual Iterator* createIterator() = 0;
+};
+
+// 具体聚合
+class ConcreteAggregate : public Aggregate {
+private:
+    std::vector<int> collection;
+
+public:
+    ConcreteAggregate(const std::vector<int>& coll) : collection(coll) {}
+
+    Iterator* createIterator() override {
+        return new ConcreteIterator(collection);
+    }
+};
+
+int main() {
+    std::vector<int> numbers = {1, 2, 3, 4, 5};
+    ConcreteAggregate aggregate(numbers);
+    Iterator* iterator = aggregate.createIterator();
+
+    while (iterator->hasNext()) {
+        std::cout << iterator->next() << " ";
+    }
+
+    delete iterator;
+
+    return 0;
+}
+```
+在这个示例中，我们有以下关键要点：
+
+- Iterator 是抽象迭代器类，定义了访问和遍历元素的接口。
+
+- ConcreteIterator 是具体迭代器类，实现了Iterator接口，用于遍历具体的聚合对象。
+- 
+- Aggregate 是抽象聚合类，定义了创建迭代器对象的接口。
+- 
+- ConcreteAggregate 是具体聚合类，实现了Aggregate接口，它具体实例化了一个迭代器对象并通过createIterator()方法返回。
+
+在main函数中，我们创建了一个具体的聚合对象aggregate，然后通过createIterator()方法创建了一个具体的迭代器对象iterator，最后通过迭代器遍历了聚合对象中的元素。     
+
+迭代器模式有助于将遍历算法与聚合对象分离，提高了代码的可维护性和可扩展性。客户端代码可以独立于具体聚合对象进行遍历，而不需要了解聚合对象的内部表示。这使得迭代器模式成为处理集合、列表、数组等数据结构的有用工具。
+
+Note: 李建忠老师课程实列：
+```c++
+#include <iostream>
+using namespace std;
+
+template<typename T>
+class Iterator {
+public:
+    virtual void first() = 0;
+    virtual void next() = 0;
+    virtual bool isDone() const = 0;
+    virtual T& current() = 0;
+};
+
+template<typename T>
+class MyCollection {
+public:
+    Iterator<T> GetIterator() {
+        // ...
+    }
+};
+
+template<typename T>
+class CollectionIterator: public Iterator<T> {
+    MyCollection<T> mc;
+public:
+    CollectionIterator(const MyCollection<T>& c): mc(c) {}
+
+    void first() override {
+
+    }
+
+    void next() override {
+
+    }
+
+    bool isDone() const override {
+
+    }
+
+    T& current() override {
+
+    }
+};
+
+void MyAlgorithm() {
+    MyCollection<int> mc;
+
+    Iterator<int> iter = mc.GetIterator();
+
+    for (iter.first(); !iter.isDone(); iter.next()) {
+        cout << iter.current() << endl;
+    }
+}
+```
+
+总结    
+- 最早采用了虚函数以及“面向对象”的方式来实现，但已经过时
+- 基于泛型编程和使用模板描述的迭代器，使用更加广泛灵活
+- 需要考虑虚函数调用的性能成本，指针调用和计算地址的二次运算    
+
+多态    
+- 面向对象采用“虚函数”实现运行时多态
+- 而泛型编程是编译时多态，编译期决定调用哪段代码，效率更高
 
 
 
 
+### 20、职责链模式（Chain of Responsibility Pattern） ----数据结构”模式——将特定数据结构封装在内部，在外部提供统一的接口，来实现与特定数据结构无关的访问
+
+责任链模式（Chain of Responsibility Pattern）是一种行为型设计模式，用于将请求沿着处理链传递，直到有一个处理器能够处理它为止。责任链模式允许您将请求发送到一系列处理器，每个处理器都可以决定是否处理请求，将请求传递给下一个处理器或者中止请求。
+
+在责任链模式中，通常有以下几个关键角色：
+
+1. Handler（处理器）：定义一个处理请求的接口，通常包括一个处理方法。它还可以包含一个指向下一个处理器的引用。
+
+1. ConcreteHandler（具体处理器）：实现了Handler接口，负责具体的请求处理。如果自己无法处理请求，可以将请求传递给下一个处理器。
+
+1. Client（客户端）：创建责任链并将请求发送到链的第一个处理器。
+
+下面是一个简单的C++示例，演示了责任链模式的实现：
+
+```c++
+#include <iostream>
+#include <string>
+
+// 抽象处理器类
+class Handler {
+protected:
+    Handler* nextHandler;
+
+public:
+    Handler() : nextHandler(nullptr) {}
+
+    void setNextHandler(Handler* handler) {
+        nextHandler = handler;
+    }
+
+    virtual void handleRequest(const std::string& request) = 0;
+};
+
+// 具体处理器 A
+class ConcreteHandlerA : public Handler {
+public:
+    void handleRequest(const std::string& request) override {
+        if (request == "A") {
+            std::cout << "Handler A: Handling request " << request << std::endl;
+        } else if (nextHandler != nullptr) {
+            nextHandler->handleRequest(request);
+        } else {
+            std::cout << "Handler A: Cannot handle request " << request << std::endl;
+        }
+    }
+};
+
+// 具体处理器 B
+class ConcreteHandlerB : public Handler {
+public:
+    void handleRequest(const std::string& request) override {
+        if (request == "B") {
+            std::cout << "Handler B: Handling request " << request << std::endl;
+        } else if (nextHandler != nullptr) {
+            nextHandler->handleRequest(request);
+        } else {
+            std::cout << "Handler B: Cannot handle request " << request << std::endl;
+        }
+    }
+};
+
+// 客户端
+int main() {
+    Handler* handlerA = new ConcreteHandlerA();
+    Handler* handlerB = new ConcreteHandlerB();
+
+    // 构建责任链
+    handlerA->setNextHandler(handlerB);
+
+    // 发送请求到责任链
+    handlerA->handleRequest("A");
+    handlerA->handleRequest("B");
+    handlerA->handleRequest("C");
+
+    delete handlerA;
+    delete handlerB;
+
+    return 0;
+}
+```
+
+适用场景    
+- 树形、迭代器、链表，都与数据结构模式的抽象有关，遇到类似的遍历等需求可以考虑
+- 
+总结    
+- 应用较少，主要为了将请求发送者与接收者解耦
+- 可以在运行时动态添加/修改请求的处理职责
+- 如果请求传递到职责链的末尾依旧得不到处理，应当有一个合理的缺省机制，这属于接收对象的责任而不是请求者的责任
+
+
+### 21、命令模式（Command Pattern） ----“行为变化”模式
+命令模式（Command Pattern）是一种行为型设计模式，它将请求或操作封装成一个对象，从而允许您参数化客户端对象，将操作排队、请求记录日志、支持撤销等。命令模式将发出请求的对象（客户端）和执行请求的对象（接收者）解耦，使系统更加灵活。
+
+“行为变化”模式——组件行为（本质是一段代码）的变化经常导致组件本身（本质是对象）的变化，一部分是编译时绑定（非虚函数、静态函数），一部分是运行时绑定（虚函数），而这都属于紧耦合              ——————————李建忠
+
+在命令模式中，通常有以下几个关键角色：
+1. Command（命令）：定义了一个执行操作的接口，通常包括一个execute()方法。
+1. ConcreteCommand（具体命令）：实现了Command接口，负责执行具体的操作。通常将命令与接收者关联。
+1. Receiver（接收者）：执行实际操作的对象。
+1. Invoker（调用者）：负责调用命令对象来执行请求。Invoker对象不需要知道命令的具体实现。
+
+下面是一个简单的C++示例，演示了命令模式的实现：
+```C++
+#include <iostream>
+#include <string>
+
+// 命令接口
+class Command {
+public:
+    virtual void execute() = 0;
+};
+
+// 具体命令
+class ConcreteCommand : public Command {
+private:
+    std::string action;
+
+public:
+    ConcreteCommand(const std::string& a) : action(a) {}
+
+    void execute() override {
+        std::cout << "Executing command: " << action << std::endl;
+    }
+};
+
+// 接收者
+class Receiver {
+public:
+    void performAction(const std::string& action) {
+        std::cout << "Receiver is performing action: " << action << std::endl;
+    }
+};
+
+// 调用者
+class Invoker {
+private:
+    Command* command;
+
+public:
+    void setCommand(Command* cmd) {
+        command = cmd;
+    }
+
+    void executeCommand() {
+        command->execute();
+    }
+};
+
+int main() {
+    Receiver receiver;
+    ConcreteCommand command("Action 1");
+    command.execute();
+
+    Invoker invoker;
+    invoker.setCommand(&command);
+    invoker.executeCommand();
+
+    return 0;
+}
+```
+在这个示例中，我们有以下关键要点：
+- Command 是命令接口，定义了一个纯虚函数 execute() 用于执行命令。
+- ConcreteCommand 是具体命令类，它实现了 Command 接口，负责执行具体的操作。
+- Receiver 是接收者，执行实际操作的对象。
+- Invoker 是调用者，负责调用命令对象来执行请求。它不需要了解命令的具体实现，只需要知道如何调用命令的 execute() 方法。
+
+在 main 函数中，我们首先创建了一个具体命令对象 command 并执行它，然后通过调用者 invoker 将命令对象设置为 command 并执行命令。这个示例演示了命令模式的基本原理，允许您将操作封装成对象，以便更灵活地控制和扩展系统。
+
+note: 实列2  ------ 李建忠
+```C++
+#include <iostream>
+using namespace std;
+
+class Command {
+public:
+    virtual void execute() = 0;
+};
+
+// 具体命令对象
+class ConcreteCommand1: public Command {
+    string arg;
+public:
+    ConcreteCommand1(const string& a): arg(a) {
+
+    }
+    void execute() override {
+        cout << "#1 process..." << arg << endl;
+    }
+};
+
+class ConcreteCommand2: public Command {
+    string arg;
+public:
+    ConcreteCommand2(const string& a): arg(a) {
+
+    }
+    void execute() override {
+        cout << "#2 process..." << arg << endl;
+    }
+};
+
+// 宏
+class MacroCommand: public Command {
+    vector<Command*> commands;
+public:
+    void addCommand(Command* c) {
+        commands.push_back(c);
+    }
+    void execute() override {
+        for (auto& c: commands) {
+            c->execute();
+        }
+    }
+};
+
+int main() {
+    ConcreteCommand1 command1("Arg ###");
+    ConcreteCommand2 command2("Arg $$$");
+
+    MacroCommand macro;
+    macro.addCommand(&command1);
+    macro.addCommand(&command2);
+
+    macro.execute();
+}
+```
+
+
+适用场景   ： 需要将行为抽象成为对象时
+
+总结
+1. “将行为封装成对象”，行为请求者与实现者解耦
+2. ConcreteCommand可以保存额外信息，结合使用组合模式，可以将多个“命令”封装成一个复合命令MacroCommand
+3. 命令模式与函数对象很相似，函数对象是重载了参数，结合泛型编程，使用模板实现编译时绑定；而命令模式是运行时绑定（虚函数调用）。且在94年的时候，泛型编程和函数对象不流行，目前应用不广泛
+
+区别浅析
+1. 命令模式：函数名+返回值+参数，重载要符合接口规范，规范更严格，有性能损失（虚函数）
+1. 函数对象：以签名区分，只需要参数+返回值一致，接口规范更灵活，编译时依赖，性能更高
+1. 函数对象（仿函数）使用更广泛（C++以性能优先）
+
+
+
+### 22、访问者模式（Visitor Pattern） ----“行为变化”模式
+访问者模式（Visitor Pattern）是一种行为型设计模式，用于处理一个复杂对象结构中各个元素的操作，而不需要修改这些元素的类。它将操作与对象的结构分离，使得您可以添加新的操作而无需修改现有的类。
+
+Note： “行为变化”模式——组件行为（本质是一段代码）的变化经常导致组件本身（本质是对象）的变化，一部分是编译时绑定（非虚函数、静态函数），一部分是运行时绑定（虚函数），而这都属于紧耦合              ----------李建忠     
+
+     动机与背景 : 软件构件过程中，需要对类层次结构增加新的行为方法，如何在不改变类层次结构的情况下动态（运行时）添加新的操作                                                     ----------李建忠 
+
+
+在访问者模式中，通常有以下几个关键角色：
+1. Visitor（访问者）：定义了访问对象结构中各个元素的接口，通常包括多个visit()方法，每个方法对应一个具体元素的访问操作。
+2. ConcreteVisitor（具体访问者）：实现了Visitor接口，负责实际执行访问操作。
+3. Element（元素）：定义了一个接受访问者的接口，通常包括一个accept()方法，该方法将访问者作为参数传递进来，以便访问者能够对元素进行操作。
+4. ConcreteElement（具体元素）：实现了Element接口，负责实现accept()方法，并通常包含一个数据结构。
+5. ObjectStructure（对象结构）：包含了一组具体元素，通常提供了遍历元素的方法。
+
+下面是一个简单的C++示例，演示了访问者模式的实现：
+```c++
+#include <iostream>
+#include <vector>
+
+class Visitor;
+
+// 抽象元素
+class Element {
+public:
+    virtual void accept(Visitor& visitor) = 0;
+};
+
+// 具体元素 A
+class ConcreteElementA : public Element {
+public:
+    void accept(Visitor& visitor) override;
+    std::string operationA() {
+        return "ConcreteElementA";
+    }
+};
+
+// 具体元素 B
+class ConcreteElementB : public Element {
+public:
+    void accept(Visitor& visitor) override;
+    std::string operationB() {
+        return "ConcreteElementB";
+    }
+};
+
+// 抽象访问者
+class Visitor {
+public:
+    virtual void visit(ConcreteElementA& element) = 0;
+    virtual void visit(ConcreteElementB& element) = 0;
+};
+
+// 具体访问者 1
+class ConcreteVisitor1 : public Visitor {
+public:
+    void visit(ConcreteElementA& element) override {
+        std::cout << "Visitor 1 is visiting " << element.operationA() << std::endl;
+    }
+
+    void visit(ConcreteElementB& element) override {
+        std::cout << "Visitor 1 is visiting " << element.operationB() << std::endl;
+    }
+};
+
+// 具体访问者 2
+class ConcreteVisitor2 : public Visitor {
+public:
+    void visit(ConcreteElementA& element) override {
+        std::cout << "Visitor 2 is visiting " << element.operationA() << std::endl;
+    }
+
+    void visit(ConcreteElementB& element) override {
+        std::cout << "Visitor 2 is visiting " << element.operationB() << std::endl;
+    }
+};
+
+// 对象结构
+class ObjectStructure {
+private:
+    std::vector<Element*> elements;
+
+public:
+    void add(Element* element) {
+        elements.push_back(element);
+    }
+
+    void accept(Visitor& visitor) {
+        for (Element* element : elements) {
+            element->accept(visitor);
+        }
+    }
+};
+
+void ConcreteElementA::accept(Visitor& visitor) {
+    visitor.visit(*this);
+}
+
+void ConcreteElementB::accept(Visitor& visitor) {
+    visitor.visit(*this);
+}
+
+int main() {
+    ObjectStructure objectStructure;
+    objectStructure.add(new ConcreteElementA);
+    objectStructure.add(new ConcreteElementB);
+
+    ConcreteVisitor1 visitor1;
+    ConcreteVisitor2 visitor2;
+
+    objectStructure.accept(visitor1);
+    objectStructure.accept(visitor2);
+
+    return 0;
+}
+```
+在这个示例中，我们有以下关键要点：
+
+- Element 是抽象元素类，定义了接受访问者的接口。
+- ConcreteElementA 和 ConcreteElementB 是具体元素类，它们实现了Element接口，并包含各自的操作。
+- Visitor 是抽象访问者类，定义了访问具体元素的接口。
+- ConcreteVisitor1 和 ConcreteVisitor2 是具体访问者类，它们实现了Visitor接口，并定义了对元素的具体访问操作。
+- ObjectStructure 是对象结构类，包含了一组具体元素，它提供了接受访问者的方法，用于遍历元素并让访问者执行操作。
+
+在main函数中，我们创建了一组元素并添加到对象结构中，然后创建了两个不同的具体访问者（visitor1和visitor2），最后通过对象结构遍历元素，让不同的访问者对元素执行操作。
+
+访问者模式允许您在不修改元素类的情况下添加新的操作。这对于需要对现有的复杂对象结构进行各种操作的情况非常有用。
+
+Note : 案例2： ----李建忠
+```C++
+//没有使用设计模式的代码
+#include <iostream>
+using namespace std;
+
+
+class Element {
+public:
+    virtual void Func1() = 0;
+    virtual void Func2(int data) = 0;
+    virtual ~Element() {}
+
+    // 如果需要添加新的操作
+    virtual void Func3() = 0;
+    virtual void Func4() = 0;
+    // Func5
+};
+
+class ElementA: public Element {
+public:
+    void Func1() override {
+        // ...
+    }
+    void Func2(int data) override {
+        // ...
+    }
+};
+
+class ElementB: public Element {
+public:
+    void Func1() override {
+        // ***
+    }
+    void Func2(int data) override {
+        // ***
+    }
+};
+
+//使用设计模式的代码
+
+#include <iostream>
+using namespace std;
+
+class Element {
+public:
+    virtual void accept(Visitor& visitor) = 0;
+    virtual ~Element() {}
+};
+
+class ElementA: public Element {
+public:
+    void accept(Visitor& visitor) override {
+        visitor.visitElementA(*this);
+    }
+};
+
+class ElementB: public Element {
+public:
+    void accept(Visitor& visitor) override {
+        visitor.visitElementB(*this);
+    }
+};
+
+class Visitor {
+public:
+    virtual void visitElementA(Element& element) = 0;
+    virtual void visitElementB(Element& element) = 0;
+    virtual ~Visitor() {}
+};
+
+// 将来需要增加的部分
+
+class Visitor1: public Visitor {
+    void visitElementA(Element& element) override {
+        cout << "Visitor1 is processing ElementA" << endl;
+    }
+    void visitElementB(Element& element) override {
+        cout << "Visitor1 is processing ElementB" << endl;
+    }
+};
+
+class Visitor2: public Visitor {
+    void visitElementA(Element& element) override {
+        cout << "Visitor2 is processing ElementA" << endl;
+    }
+    void visitElementB(Element& element) override {
+        cout << "Visitor2 is processing ElementB" << endl;
+    }
+};
+
+
+int main() {
+    Visitor2 visitor2;
+    ElementA elementA;
+    elementA.accept(visitor2); // double dispatch
+}
+
+```
+
+适用场景 : 代码中Element以及其子类需要是确定的（稳定的），否则无法使用访问器模式
+
+总结
+1. 需要Element类及其子类的结构与个数是稳定的，所以受到了很大的限制，应用不算广泛
+1. 通过双重分发实现不改变Element类层次结构的情况下动态添加了新的操作
+1. 第一次分发是accept的多态辨析，第二次分发是visitorElementX的多态辨析
+
+
+### 23、解析器模式（Parser Pattern） ----“行为变化”模式
+
+解析器模式（Parser Pattern）是一种行为型设计模式，它用于定义一种语法解析的方式，将复杂的文本或数据结构解析成可操作的对象表示。解析器模式将解析操作封装到一个对象中，使得客户端能够使用不同的解析器来解析不同格式的输入。
+
+Note: 领域规则”模式——特定领域中，某些变化虽然频繁，但可以抽象为某种规则  ----- 李建忠
+
+    动机与背景：软件构件过程中，遇到了某一特定领域的复杂问题，类似的结构不断重复出现，使用普通编程将面临非常频繁的变化                                                  ----- 李建忠
+
+在解析器模式中，通常有以下几个关键角色：
+1. AbstractExpression（抽象表达式）：定义了解析操作的接口，通常包括一个parse()方法。
+2. TerminalExpression（终结符表达式）：实现了AbstractExpression接口，表示文法中的终结符，它是解析的最基本单元。 
+3. NonterminalExpression（非终结符表达式）：实现了AbstractExpression接口，表示文法中的非终结符，通常由多个终结符和非终结符组成。
+4. Context（上下文）：包含待解析的文本或数据，并提供了解析器操作的接口。
+5. Client（客户端）：负责创建解析器并使用它来解析输入。
+
+下面是一个简单的C++示例，演示了解析器模式的实现，我们将使用一个简单的数学表达式解析器作为示例：
+```c++
+#include <iostream>
+#include <string>
+#include <stack>
+
+// 抽象表达式
+class AbstractExpression {
+public:
+    virtual int interpret() = 0;
+};
+
+// 终结符表达式
+class TerminalExpression : public AbstractExpression {
+private:
+    int value;
+
+public:
+    TerminalExpression(int val) : value(val) {}
+
+    int interpret() override {
+        return value;
+    }
+};
+
+// 非终结符表达式
+class NonterminalExpression : public AbstractExpression {
+private:
+    AbstractExpression* left;
+    AbstractExpression* right;
+    char operation;
+
+public:
+    NonterminalExpression(AbstractExpression* l, AbstractExpression* r, char op)
+        : left(l), right(r), operation(op) {}
+
+    int interpret() override {
+        int leftValue = left->interpret();
+        int rightValue = right->interpret();
+
+       
+
+        if (operation == '+') {
+            return leftValue + rightValue;
+        } else if (operation == '-') {
+            return leftValue - rightValue;
+        } else if (operation == '*') {
+            return leftValue * rightValue;
+        } else if (operation == '/') {
+            if (rightValue != 0) {
+                return leftValue / rightValue;
+            } else {
+                throw std::runtime_error("Division by zero");
+            }
+        }
+
+        throw std::runtime_error("Invalid operation");
+    }
+};
+
+int main() {
+    // 构建一个简单的数学表达式：1 + 2 * 3
+    AbstractExpression* expression =
+        new NonterminalExpression(new TerminalExpression(1),
+                                  new NonterminalExpression(new TerminalExpression(2),
+                                                            new TerminalExpression(3),
+                                                            '*'),
+                                  '+');
+
+    int result = expression->interpret();
+    std::cout << "Result: " << result << std::endl;
+
+    delete expression;
+
+    return 0;
+}
+```
+在这个示例中，我们有以下关键要点：
+- AbstractExpression 是抽象表达式类，定义了解析操作的接口，包括一个 interpret() 方法。
+- TerminalExpression 是终结符表达式类，表示解析的最基本单元，即数字。
+- NonterminalExpression 是非终结符表达式类，表示解析的非终结符，包括加法、减法、乘法和除法。
+
+在 main 函数中，我们构建了一个简单的数学表达式，并使用解析器来解析和计算它的值。
+
+解析器模式用于处理语法解析、文本解析、数据格式解析等场景，它将复杂的解析操作封装到对象中，使得客户端可以使用不同的解析器来处理不同格式的输入。这提供了一种有效的方式来处理和分析文本或数据。
+
+note: 案例2    -----李建忠
+```c++
+#include <iostream>
+using namespace std;
+
+
+class Expression {
+public:
+    virtual int interpreter(map<char, int> var) = 0;
+    virtual ~Expression() {}
+};
+
+// 变量表达式，即叶子节点
+class VarExpression: public Expression {
+    char key;
+public:
+    VarExpression(const char& key) {
+        this->key = key;
+    }
+    int interpreter(map<char, int> var) override {
+        return var[key];
+    }
+};
+
+// 符号表达式，即非叶子节点
+class SymbolExpression: public Expression {
+    // 运算符左右2个参数
+    Expression* left;
+    Expression* right;
+public:
+    // 构造
+    SymbolExpression(Expression* left, Expression* right): left(left), right(right) {
+
+    }
+};
+
+// 加法运算
+class AddExpression: public SymbolExpression {
+public:
+    AddExpression(Expression* left, Expression* right): SymbolExpression(left, right) {
+
+    }
+    int interpreter(map<char, int> var) override {
+        return left->interpreter(var) + right->interpreter(var);
+    }
+};
+
+// 减法运算
+class SubExpression: public SymbolExpression {
+public:
+    SubExpression(Expression* left, Expression* right): SymbolExpression(left, right) {
+
+    }
+    int interpreter(map<char, int> var) override {
+        return left->interpreter(var) - right->interpreter(var);
+    }
+};
+
+Expression* analyse(string expStr) {
+    stack<Expression*> expStack;
+    Expression* left = nullptr;
+    Expression* right = nullptr;
+    for (int i = 0; i < expStr.size(); ++i) {
+        switch(expStr[i]) {
+            case '+':
+                // 加法
+                left = expStack.top();
+                right = new VarExpression(expStr[++i]);
+                expStack.push(new AddExpression(left, right));
+                break;
+            case '-':
+                // 减法
+                left = expStack.top();
+                right = new VarExpression(expStr[++i]);
+                expStack.push(new SubExpression(left, right));
+                break;
+            default:
+                // 终结表达式
+                expStack.push(new VarExpression(expStr[i]));
+        }
+        Expression* expression = expStack.top();
+        return expression;
+    }
+}
+
+void release(Expression* expression) {
+    // 释放表达式节点树的空间
+}
+
+
+int main() {
+    string expStr = "a+b-c+d";
+    map<char, int> var;
+    var.insert(make_pair('a', 5));
+    var.insert(make_pair('b', 2));
+    var.insert(make_pair('c', 1));
+    var.insert(make_pair('d', 6));
+
+    Expression* expression = analyse(expStr);
+
+    int result = expression->interpreter(var);
+
+    cout << result << endl;
+
+    release(expression);
+}
+```
+
+    适用场景： 满足“业务规则频繁变化，类似结构不断出现，并且容易抽象为语法规则”的情况，使用解析器模式
+
+总结
+- 注意使用场景
+- 使用interpreter模式定义文法规则，可以使用面向对象的技巧“扩展”文法
+- 比较适合简单的文法表示
+
+
+## 参考文档
 - [1] [李建忠 c++ 设计模式课程] ()
 - [2] [Karepbq43231](https://juejin.cn/column/7185195060198604860)
 - [3] [毅大师](https://zhuanlan.zhihu.com/p/563209541)
